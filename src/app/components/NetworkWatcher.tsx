@@ -101,6 +101,7 @@ export default function NetworkWatcher() {
     const saved = safeParseJson<ScanSettings>(localStorage.getItem(STORAGE_WATCHER.scanSettings));
     return saved ?? { fastIntervalSec: 5, slowIntervalSec: 30, timeoutSec: 10 };
   });
+  const [query, setQuery] = useState("");
 
   const defaultColumns: Column[] = [
     { id: 'type', label: 'Tipo', width: 80, visible: true },
@@ -317,6 +318,13 @@ export default function NetworkWatcher() {
     setScanSettings({ fastIntervalSec: 5, slowIntervalSec: 30, timeoutSec: 10 });
     notif.push({ type: "warning", source: "Watcher", message: "Datos reseteados (UI)" });
   };
+
+  const filteredDevices = devices.filter((d) => {
+    const q = query.trim().toLowerCase();
+    if (!q) return true;
+    const hay = `${d.ip} ${d.ipv6} ${d.mac} ${d.hostname} ${d.vendor} ${d.username} ${d.usertext}`.toLowerCase();
+    return hay.includes(q);
+  });
 
   return (
     <div className="space-y-6">
@@ -584,6 +592,36 @@ export default function NetworkWatcher() {
             </button>
           </div>
         </div>
+
+        {/* Quick Search */}
+        <div className="mt-4">
+          <div className="flex items-center justify-between mb-2">
+            <Label className="text-sm" style={{ color: theme.colors.textSecondary }}>
+              Búsqueda rápida
+            </Label>
+            <div className="text-xs font-mono" style={{ color: theme.colors.textSecondary }}>
+              {filteredDevices.length}/{devices.length}
+            </div>
+          </div>
+          <div className="relative">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: theme.colors.textSecondary }}>
+              <Search className="w-4 h-4" />
+            </div>
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="IP, hostname, vendor, username, nota..."
+              className="h-11 rounded-xl pl-10"
+              style={{
+                backgroundColor: theme.colors.bg,
+                borderColor: theme.colors.border,
+                color: theme.colors.text
+              }}
+              data-dev-id="networkwatcher-quick-search"
+              data-dev-action="setQuery"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Table */}
@@ -627,7 +665,7 @@ export default function NetworkWatcher() {
               </tr>
             </thead>
             <tbody>
-              {devices.map((device) => (
+              {filteredDevices.map((device) => (
                 <tr
                   key={device.ip}
                   className="transition-colors"
