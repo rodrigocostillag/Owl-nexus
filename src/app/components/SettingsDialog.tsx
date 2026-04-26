@@ -4,7 +4,7 @@ import { Label } from './ui/label';
 import { useTheme, themes } from './ThemeContext';
 import { pluginManager } from '../plugins/PluginSystem';
 import { useDevMode } from './developer/DevModeContext';
-import { Palette, Settings2, Code2 } from 'lucide-react';
+import { Palette, Settings2, Code2, Shield, Cpu, Sparkles, LayoutPanelTop, Layers } from 'lucide-react';
 import { Switch } from './ui/switch';
 
 interface SettingsDialogProps {
@@ -12,49 +12,87 @@ interface SettingsDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const STORAGE_PROFILE = "nexus_settings_profile_v1";
+
+function readProfile(): "dev" | "prod" | "test" {
+  const raw = localStorage.getItem(STORAGE_PROFILE);
+  if (raw === "dev" || raw === "prod" || raw === "test") return raw;
+  return "dev";
+}
+
 export default function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const { theme, setTheme } = useTheme();
-  const [activeSection, setActiveSection] = useState('general');
+  const [activeSection, setActiveSection] = useState('core-modules');
   const [plugins, setPlugins] = useState(pluginManager.getEnabledPlugins());
   const dev = useDevMode();
+  const [profile, setProfile] = useState<"dev" | "prod" | "test">("dev");
 
   useEffect(() => {
+    setProfile(readProfile());
     const unsubscribe = pluginManager.subscribe(() => {
       setPlugins(pluginManager.getEnabledPlugins());
     });
     return unsubscribe;
   }, []);
 
-  const sections = [
+  const coreSections = [
     {
-      id: 'general',
-      label: 'General',
-      icon: Settings2,
-      component: GeneralSettings
+      id: 'core-modules',
+      label: 'Módulos',
+      icon: Layers,
+      component: GeneralSettings,
+    },
+    {
+      id: 'core-system',
+      label: 'Sistema',
+      icon: Cpu,
+      component: () => <SystemSettings profile={profile} setProfile={setProfile} />,
+    },
+    {
+      id: 'core-ui',
+      label: 'UI',
+      icon: LayoutPanelTop,
+      component: UiSettings,
     },
     {
       id: 'themes',
       label: 'Temas',
       icon: Palette,
-      component: ThemeSettings
+      component: ThemeSettings,
+    },
+    {
+      id: 'core-ai',
+      label: 'IA',
+      icon: Sparkles,
+      component: AiSettings,
+    },
+    {
+      id: 'core-security',
+      label: 'Seguridad',
+      icon: Shield,
+      component: SecuritySettings,
     },
     // DEV-ID: settings-dev-section
     {
       id: 'developer',
       label: 'Developer',
       icon: Code2,
-      component: DeveloperSettings
+      component: DeveloperSettings,
     },
+  ];
+
+  const pluginSections = [
     ...plugins
       .filter(p => p.settingsComponent)
       .map(p => ({
-        id: p.id,
+        id: `plugin-${p.id}`,
         label: p.name,
         icon: p.icon,
         component: p.settingsComponent!
       }))
   ];
 
+  const sections = [...coreSections, ...pluginSections];
   const ActiveComponent = sections.find(s => s.id === activeSection)?.component || GeneralSettings;
 
   return (
@@ -80,34 +118,90 @@ export default function SettingsDialog({ open, onOpenChange }: SettingsDialogPro
               </DialogDescription>
             </DialogHeader>
 
-            <nav className="space-y-1">
-              {sections.map((section) => {
-                const Icon = section.icon;
-                return (
-                  <button
-                    key={section.id}
-                    onClick={() => setActiveSection(section.id)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left"
-                    style={{
-                      backgroundColor: activeSection === section.id ? `${theme.colors.primary}20` : 'transparent',
-                      color: activeSection === section.id ? theme.colors.primary : theme.colors.textSecondary
-                    }}
-                    onMouseEnter={(e) => {
-                      if (activeSection !== section.id) {
-                        e.currentTarget.style.backgroundColor = `${theme.colors.primary}10`;
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (activeSection !== section.id) {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                      }
-                    }}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span className="font-medium">{section.label}</span>
-                  </button>
-                );
-              })}
+            <nav className="space-y-4" data-dev-id="settings-nav">
+              <div>
+                <div className="px-2 text-xs font-semibold uppercase tracking-wide"
+                  style={{ color: theme.colors.textSecondary }}
+                >
+                  Core
+                </div>
+                <div className="mt-2 space-y-1">
+                  {coreSections.map((section) => {
+                    const Icon = section.icon;
+                    return (
+                      <button
+                        key={section.id}
+                        onClick={() => setActiveSection(section.id)}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left"
+                        style={{
+                          backgroundColor: activeSection === section.id ? `${theme.colors.primary}20` : 'transparent',
+                          color: activeSection === section.id ? theme.colors.primary : theme.colors.textSecondary
+                        }}
+                        onMouseEnter={(e) => {
+                          if (activeSection !== section.id) {
+                            e.currentTarget.style.backgroundColor = `${theme.colors.primary}10`;
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (activeSection !== section.id) {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                          }
+                        }}
+                        data-dev-id={`settings-core-${section.id}`}
+                      >
+                        <Icon className="w-5 h-5" />
+                        <span className="font-medium">{section.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <div className="px-2 text-xs font-semibold uppercase tracking-wide"
+                  style={{ color: theme.colors.textSecondary }}
+                >
+                  Plugins
+                </div>
+                <div className="mt-2 space-y-1">
+                  {pluginSections.length === 0 ? (
+                    <div className="px-3 py-2 text-sm"
+                      style={{ color: theme.colors.textSecondary }}
+                    >
+                      Sin settings de plugins.
+                    </div>
+                  ) : (
+                    pluginSections.map((section) => {
+                      const Icon = section.icon;
+                      return (
+                        <button
+                          key={section.id}
+                          onClick={() => setActiveSection(section.id)}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left"
+                          style={{
+                            backgroundColor: activeSection === section.id ? `${theme.colors.primary}20` : 'transparent',
+                            color: activeSection === section.id ? theme.colors.primary : theme.colors.textSecondary
+                          }}
+                          onMouseEnter={(e) => {
+                            if (activeSection !== section.id) {
+                              e.currentTarget.style.backgroundColor = `${theme.colors.primary}10`;
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (activeSection !== section.id) {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }
+                          }}
+                          data-dev-id={`settings-plugin-${section.id}`}
+                        >
+                          <Icon className="w-5 h-5" />
+                          <span className="font-medium">{section.label}</span>
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
             </nav>
           </div>
 
@@ -257,6 +351,136 @@ function ThemeSettings() {
             </div>
           </button>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function SystemSettings({ profile, setProfile }: { profile: "dev" | "prod" | "test"; setProfile: (p: "dev" | "prod" | "test") => void }) {
+  const { theme } = useTheme();
+
+  return (
+    <div className="space-y-6" data-dev-id="settings-system">
+      <div>
+        <h3 className="text-lg font-semibold mb-4" style={{ color: theme.colors.text }}>
+          Sistema
+        </h3>
+        <p className="text-sm mb-6" style={{ color: theme.colors.textSecondary }}>
+          Preferencias globales (UI only por ahora).
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.colors.bg, borderColor: theme.colors.border }}>
+          <div className="font-medium" style={{ color: theme.colors.text }}>Perfil</div>
+          <div className="text-xs mt-1" style={{ color: theme.colors.textSecondary }}>
+            Dev / Prod / Test (persistente).
+          </div>
+          <div className="mt-3 flex items-center gap-2">
+            {(["dev", "prod", "test"] as const).map((p) => (
+              <button
+                key={p}
+                onClick={() => {
+                  localStorage.setItem(STORAGE_PROFILE, p);
+                  setProfile(p);
+                }}
+                className="px-3 py-1.5 rounded-lg text-sm border"
+                style={{
+                  borderColor: theme.colors.border,
+                  backgroundColor: profile === p ? `${theme.colors.primary}20` : theme.colors.bgSecondary,
+                  color: profile === p ? theme.colors.primary : theme.colors.textSecondary
+                }}
+                data-dev-id={`settings-profile-${p}`}
+              >
+                {p.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UiSettings() {
+  const { theme } = useTheme();
+
+  return (
+    <div className="space-y-6" data-dev-id="settings-ui">
+      <div>
+        <h3 className="text-lg font-semibold mb-4" style={{ color: theme.colors.text }}>
+          UI
+        </h3>
+        <p className="text-sm mb-6" style={{ color: theme.colors.textSecondary }}>
+          Layout, animaciones y densidad (stubs por ahora).
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.colors.bg, borderColor: theme.colors.border }}>
+          <Label className="font-medium" style={{ color: theme.colors.text }}>Animaciones</Label>
+          <p className="text-xs mt-1" style={{ color: theme.colors.textSecondary }}>
+            Placeholder.
+          </p>
+          <div className="mt-3">
+            <Switch defaultChecked data-dev-id="settings-ui-animations" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AiSettings() {
+  const { theme } = useTheme();
+
+  return (
+    <div className="space-y-6" data-dev-id="settings-ai">
+      <div>
+        <h3 className="text-lg font-semibold mb-4" style={{ color: theme.colors.text }}>
+          IA
+        </h3>
+        <p className="text-sm mb-6" style={{ color: theme.colors.textSecondary }}>
+          Proveedor, limites y modo (UI only por ahora).
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.colors.bg, borderColor: theme.colors.border }}>
+          <Label className="font-medium" style={{ color: theme.colors.text }}>Modo</Label>
+          <p className="text-xs mt-1" style={{ color: theme.colors.textSecondary }}>
+            Manual / asistido / automatico (stub).
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SecuritySettings() {
+  const { theme } = useTheme();
+
+  return (
+    <div className="space-y-6" data-dev-id="settings-security">
+      <div>
+        <h3 className="text-lg font-semibold mb-4" style={{ color: theme.colors.text }}>
+          Seguridad
+        </h3>
+        <p className="text-sm mb-6" style={{ color: theme.colors.textSecondary }}>
+          Confirmaciones globales y permisos de IA (stubs por ahora).
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: theme.colors.bg, borderColor: theme.colors.border }}>
+          <Label className="font-medium" style={{ color: theme.colors.text }}>Confirmar acciones criticas</Label>
+          <p className="text-xs mt-1" style={{ color: theme.colors.textSecondary }}>
+            Placeholder.
+          </p>
+          <div className="mt-3">
+            <Switch defaultChecked data-dev-id="settings-security-confirm" />
+          </div>
+        </div>
       </div>
     </div>
   );
