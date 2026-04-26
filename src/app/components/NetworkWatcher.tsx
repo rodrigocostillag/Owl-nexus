@@ -15,7 +15,9 @@ import {
   Zap,
   Settings,
   X,
-  Pause
+  Pause,
+  Trash2,
+  RotateCcw
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 import { useNotifications } from './notifications/NotificationsContext';
@@ -49,13 +51,32 @@ interface Column {
   visible: boolean;
 }
 
+type DeviceEdits = Record<string, Pick<NetworkDevice, "saved" | "username" | "usertext">>;
+
+const STORAGE_WATCHER = {
+  deviceEdits: "nexus_watcher_device_edits_v1",
+  columns: "nexus_watcher_columns_v1",
+};
+
+function safeParseJson<T>(raw: string | null): T | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+
 export default function NetworkWatcher() {
   const { theme } = useTheme();
   const notif = useNotifications();
   const [scanning, setScanning] = useState(false);
   const [scanPaused, setScanPaused] = useState(false);
   const [fastScanning, setFastScanning] = useState(false);
-  const [devices, setDevices] = useState<NetworkDevice[]>(mockScanResults);
+  const [devices, setDevices] = useState<NetworkDevice[]>(() => {
+    const edits = safeParseJson<DeviceEdits>(localStorage.getItem(STORAGE_WATCHER.deviceEdits)) ?? {};
+    return mockScanResults.map((d) => (edits[d.ip] ? { ...d, ...edits[d.ip] } : d));
+  });
   const [selectedSubnet, setSelectedSubnet] = useState('192.168.1.0/24');
   const [selectedRange, setSelectedRange] = useState('1-254');
   const [configOpen, setConfigOpen] = useState(false);
@@ -70,7 +91,7 @@ export default function NetworkWatcher() {
   const [editingCell, setEditingCell] = useState<{ ip: string; field: string } | null>(null);
   const [hoveredSaveButton, setHoveredSaveButton] = useState<string | null>(null);
 
-  const [columns, setColumns] = useState<Column[]>([
+  const defaultColumns: Column[] = [
     { id: 'type', label: 'Tipo', width: 80, visible: true },
     { id: 'ip', label: 'IP Address', width: 140, visible: true },
     { id: 'ipv6', label: 'IPv6', width: 180, visible: true },
@@ -80,7 +101,12 @@ export default function NetworkWatcher() {
     { id: 'username', label: 'Username', width: 120, visible: true },
     { id: 'usertext', label: 'User Text', width: 180, visible: true },
     { id: 'actions', label: 'Acciones', width: 80, visible: true },
-  ]);
+  ];
+
+  const [columns, setColumns] = useState<Column[]>(() => {
+    const saved = safeParseJson<Column[]>(localStorage.getItem(STORAGE_WATCHER.columns));
+    return Array.isArray(saved) ? saved : defaultColumns;
+  });
 
   const [resizing, setResizing] = useState<{ columnId: string; startX: number; startWidth: number } | null>(null);
   const [dragging, setDragging] = useState<{ columnId: string; startIndex: number } | null>(null);
@@ -156,16 +182,28 @@ export default function NetworkWatcher() {
     console.log('Refreshing...');
   };
 
+  const persistDeviceEdits = (nextDevices: NetworkDevice[]) => {
+    const edits: DeviceEdits = {};
+    for (const d of nextDevices) {
+      edits[d.ip] = { saved: d.saved, username: d.username, usertext: d.usertext };
+    }
+    localStorage.setItem(STORAGE_WATCHER.deviceEdits, JSON.stringify(edits));
+  };
+
   const handleToggleSave = (ip: string) => {
-    setDevices(devices.map(d =>
-      d.ip === ip ? { ...d, saved: !d.saved } : d
-    ));
+    setDevices((prev) => {
+      const next = prev.map(d => d.ip === ip ? { ...d, saved: !d.saved } : d);
+      persistDeviceEdits(next);
+      return next;
+    });
   };
 
   const handleUpdateField = (ip: string, field: 'username' | 'usertext', value: string) => {
-    setDevices(devices.map(d =>
-      d.ip === ip ? { ...d, [field]: value } : d
-    ));
+    setDevices((prev) => {
+      const next = prev.map(d => d.ip === ip ? { ...d, [field]: value } : d);
+      persistDeviceEdits(next);
+      return next;
+    });
     setEditingCell(null);
   };
 
@@ -235,16 +273,33 @@ export default function NetworkWatcher() {
     }
   };
 
-  useState(() => {
-    if (resizing) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-    }
-  });
+  useEffect(() => {
+    if (!resizing) return;
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resizing]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_WATCHER.columns, JSON.stringify(columns));
+  }, [columns]);
+
+  const handleClearTable = () => {
+    setDevices([]);
+    notif.push({ type: "info", source: "Watcher", message: "Tabla limpiada (UI)" });
+  };
+
+  const handleResetData = () => {
+    localStorage.removeItem(STORAGE_WATCHER.deviceEdits);
+    localStorage.removeItem(STORAGE_WATCHER.columns);
+    setDevices(mockScanResults);
+    setColumns(defaultColumns);
+    notif.push({ type: "warning", source: "Watcher", message: "Datos reseteados (UI)" });
+  };
 
   return (
     <div className="space-y-6">
@@ -355,6 +410,40 @@ export default function NetworkWatcher() {
 
           {/* Action Buttons */}
           <div className="md:col-span-7 flex items-end gap-2">
+            <button
+              onClick={handleClearTable}
+              className="h-11 w-11 rounded-xl transition-all flex items-center justify-center"
+              style={{
+                backgroundColor: `${theme.colors.error}10`,
+                borderColor: `${theme.colors.error}30`,
+                border: '1px solid',
+                color: theme.colors.error
+              }}
+              title="Limpiar tabla (UI)"
+              // DEV-ID: networkwatcher-clear-table
+              data-dev-id="networkwatcher-clear-table"
+              data-dev-action="handleClearTable"
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+
+            <button
+              onClick={handleResetData}
+              className="h-11 w-11 rounded-xl transition-all flex items-center justify-center"
+              style={{
+                backgroundColor: `${theme.colors.warning}10`,
+                borderColor: `${theme.colors.warning}30`,
+                border: '1px solid',
+                color: theme.colors.warning
+              }}
+              title="Reset datos (UI)"
+              // DEV-ID: networkwatcher-reset-data
+              data-dev-id="networkwatcher-reset-data"
+              data-dev-action="handleResetData"
+            >
+              <RotateCcw className="w-5 h-5" />
+            </button>
+
             <button
               onClick={handleFastScan}
               disabled={fastScanning}
