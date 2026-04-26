@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 import { useNotifications } from './notifications/NotificationsContext';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 
 interface NetworkDevice {
   ip: string;
@@ -52,10 +53,16 @@ interface Column {
 }
 
 type DeviceEdits = Record<string, Pick<NetworkDevice, "saved" | "username" | "usertext">>;
+type ScanSettings = {
+  fastIntervalSec: number;
+  slowIntervalSec: number;
+  timeoutSec: number;
+};
 
 const STORAGE_WATCHER = {
   deviceEdits: "nexus_watcher_device_edits_v1",
   columns: "nexus_watcher_columns_v1",
+  scanSettings: "nexus_watcher_scan_settings_v1",
 };
 
 function safeParseJson<T>(raw: string | null): T | null {
@@ -90,6 +97,10 @@ export default function NetworkWatcher() {
   const [scanningIPs, setScanningIPs] = useState<string[]>([]);
   const [editingCell, setEditingCell] = useState<{ ip: string; field: string } | null>(null);
   const [hoveredSaveButton, setHoveredSaveButton] = useState<string | null>(null);
+  const [scanSettings, setScanSettings] = useState<ScanSettings>(() => {
+    const saved = safeParseJson<ScanSettings>(localStorage.getItem(STORAGE_WATCHER.scanSettings));
+    return saved ?? { fastIntervalSec: 5, slowIntervalSec: 30, timeoutSec: 10 };
+  });
 
   const defaultColumns: Column[] = [
     { id: 'type', label: 'Tipo', width: 80, visible: true },
@@ -288,6 +299,10 @@ export default function NetworkWatcher() {
     localStorage.setItem(STORAGE_WATCHER.columns, JSON.stringify(columns));
   }, [columns]);
 
+  useEffect(() => {
+    localStorage.setItem(STORAGE_WATCHER.scanSettings, JSON.stringify(scanSettings));
+  }, [scanSettings]);
+
   const handleClearTable = () => {
     setDevices([]);
     notif.push({ type: "info", source: "Watcher", message: "Tabla limpiada (UI)" });
@@ -296,8 +311,10 @@ export default function NetworkWatcher() {
   const handleResetData = () => {
     localStorage.removeItem(STORAGE_WATCHER.deviceEdits);
     localStorage.removeItem(STORAGE_WATCHER.columns);
+    localStorage.removeItem(STORAGE_WATCHER.scanSettings);
     setDevices(mockScanResults);
     setColumns(defaultColumns);
+    setScanSettings({ fastIntervalSec: 5, slowIntervalSec: 30, timeoutSec: 10 });
     notif.push({ type: "warning", source: "Watcher", message: "Datos reseteados (UI)" });
   };
 
@@ -748,42 +765,117 @@ export default function NetworkWatcher() {
           <DialogHeader>
             <DialogTitle>Configuración de Network Watcher</DialogTitle>
             <DialogDescription style={{ color: theme.colors.textSecondary }}>
-              Personaliza qué columnas mostrar en la tabla
+              Core settings del Watcher (UI only)
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 mt-4">
-            <div>
-              <h4 className="font-semibold mb-3" style={{ color: theme.colors.text }}>
-                Columnas Visibles
-              </h4>
-              <div className="space-y-2">
-                {columns.map((column) => (
-                  <div key={column.id} className="flex items-center justify-between p-3 rounded-lg"
-                    style={{ backgroundColor: theme.colors.bg }}
-                  >
-                    <span style={{ color: theme.colors.text }}>{column.label}</span>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={column.visible}
-                        onChange={() => {
-                          setColumns(columns.map(c =>
-                            c.id === column.id ? { ...c, visible: !c.visible } : c
-                          ));
-                        }}
-                        className="sr-only peer"
-                      />
-                      <div className="w-11 h-6 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"
-                        style={{
-                          backgroundColor: theme.colors.bg,
-                          border: `1px solid ${theme.colors.border}`
-                        }}
-                      />
-                    </label>
+          <div className="mt-4">
+            <Tabs defaultValue="columns">
+              <TabsList>
+                <TabsTrigger value="columns" data-dev-id="watcher-settings-tab-columns">Columnas</TabsTrigger>
+                <TabsTrigger value="scan" data-dev-id="watcher-settings-tab-scan">Escaneo</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="columns" className="mt-4">
+                <div>
+                  <h4 className="font-semibold mb-3" style={{ color: theme.colors.text }}>
+                    Columnas Visibles
+                  </h4>
+                  <div className="space-y-2">
+                    {columns.map((column) => (
+                      <div key={column.id} className="flex items-center justify-between p-3 rounded-lg"
+                        style={{ backgroundColor: theme.colors.bg }}
+                      >
+                        <span style={{ color: theme.colors.text }}>{column.label}</span>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={column.visible}
+                            onChange={() => {
+                              setColumns(columns.map(c =>
+                                c.id === column.id ? { ...c, visible: !c.visible } : c
+                              ));
+                            }}
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"
+                            style={{
+                              backgroundColor: theme.colors.bg,
+                              border: `1px solid ${theme.colors.border}`
+                            }}
+                          />
+                        </label>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="scan" className="mt-4">
+                <div className="space-y-3" data-dev-id="watcher-settings-scan">
+                  <div className="p-4 rounded-xl border"
+                    style={{ backgroundColor: theme.colors.bg, borderColor: theme.colors.border }}
+                  >
+                    <div className="font-semibold" style={{ color: theme.colors.text }}>
+                      Parámetros de escaneo
+                    </div>
+                    <div className="text-xs mt-1" style={{ color: theme.colors.textSecondary }}>
+                      UI only: se usará cuando conectemos backend real.
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-3 gap-3">
+                      <div>
+                        <Label style={{ color: theme.colors.text }}>Rápido (s)</Label>
+                        <input
+                          type="number"
+                          min={1}
+                          value={scanSettings.fastIntervalSec}
+                          onChange={(e) => setScanSettings(s => ({ ...s, fastIntervalSec: Number(e.target.value) }))}
+                          className="mt-2 w-full h-10 rounded-lg border px-3"
+                          style={{
+                            backgroundColor: theme.colors.bgSecondary,
+                            borderColor: theme.colors.border,
+                            color: theme.colors.text
+                          }}
+                          data-dev-id="watcher-scan-fast"
+                        />
+                      </div>
+                      <div>
+                        <Label style={{ color: theme.colors.text }}>Lento (s)</Label>
+                        <input
+                          type="number"
+                          min={1}
+                          value={scanSettings.slowIntervalSec}
+                          onChange={(e) => setScanSettings(s => ({ ...s, slowIntervalSec: Number(e.target.value) }))}
+                          className="mt-2 w-full h-10 rounded-lg border px-3"
+                          style={{
+                            backgroundColor: theme.colors.bgSecondary,
+                            borderColor: theme.colors.border,
+                            color: theme.colors.text
+                          }}
+                          data-dev-id="watcher-scan-slow"
+                        />
+                      </div>
+                      <div>
+                        <Label style={{ color: theme.colors.text }}>Timeout (s)</Label>
+                        <input
+                          type="number"
+                          min={1}
+                          value={scanSettings.timeoutSec}
+                          onChange={(e) => setScanSettings(s => ({ ...s, timeoutSec: Number(e.target.value) }))}
+                          className="mt-2 w-full h-10 rounded-lg border px-3"
+                          style={{
+                            backgroundColor: theme.colors.bgSecondary,
+                            borderColor: theme.colors.border,
+                            color: theme.colors.text
+                          }}
+                          data-dev-id="watcher-scan-timeout"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </DialogContent>
       </Dialog>
