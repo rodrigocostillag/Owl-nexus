@@ -16,6 +16,7 @@ function makeInteractionFromTarget(target: EventTarget | null): DevInteraction |
   if (!el) return null;
 
   // Ignore clicks inside the dev dock itself.
+  if (getClosest(el, "[data-right-panel=\"true\"]")) return null;
   if (getClosest(el, '[data-dev-id="dev-right-dock"]')) return null;
 
   // Prefer explicitly tagged dev ids, then fall back to common interactives.

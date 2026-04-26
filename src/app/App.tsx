@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { ThemeProvider, useTheme } from './components/ThemeContext';
 import { DevModeProvider } from './components/developer/DevModeContext';
-import DeveloperDock from './components/developer/DeveloperDock';
 import { useDevMode } from './components/developer/DevModeContext';
 import DevClickTracker from './components/developer/DevClickTracker';
+import { RightPanelProvider, useRightPanel } from './components/right-panel/RightPanelContext';
+import RightPanelHost from './components/right-panel/RightPanelHost';
 import { pluginManager } from './plugins/PluginSystem';
 import Dashboard from './components/Dashboard';
 import NetworkWatcher from './components/NetworkWatcher';
@@ -25,7 +26,8 @@ import {
   KeyRound,
   Network,
   Sparkles,
-  Settings
+  Settings,
+  Bot
 } from 'lucide-react';
 
 // Register all plugins
@@ -95,6 +97,7 @@ pluginManager.registerPlugin({
 function AppContent() {
   const { theme } = useTheme();
   const dev = useDevMode();
+  const rp = useRightPanel();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [enabledPlugins, setEnabledPlugins] = useState(pluginManager.getEnabledPlugins());
@@ -112,8 +115,8 @@ function AppContent() {
 
   return (
     <div className="min-h-screen text-white" style={{ backgroundColor: theme.colors.bg }}>
-      {/* DEV-ID: developer-dock-mount */}
-      <DeveloperDock />
+      {/* DEV-ID: right-panel-mount */}
+      <RightPanelHost />
       {/* DEV-ID: click-tracker-mount */}
       <DevClickTracker />
       {/* Sidebar */}
@@ -212,7 +215,7 @@ function AppContent() {
 
       {/* Main Content */}
       {/* DEV-ID: main-content-wrapper */}
-      <div className="ml-20" style={{ marginRight: dev.enabled ? 440 : 0 }}>
+      <div className="ml-20" style={{ marginRight: (dev.enabled || rp.aiOpen) ? rp.widthPx : 0 }}>
         {/* Top Bar */}
         <header className="h-16 border-b flex items-center justify-between px-8"
           style={{
@@ -229,6 +232,23 @@ function AppContent() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            {/* DEV-ID: ai-overlay-toggle */}
+            <button
+              type="button"
+              onClick={() => rp.setAiOpen(!rp.aiOpen)}
+              className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 transition-all"
+              style={{
+                backgroundColor: rp.aiOpen ? `${theme.colors.primary}20` : theme.colors.bg,
+                border: `1px solid ${theme.colors.border}`,
+                color: rp.aiOpen ? theme.colors.primary : theme.colors.textSecondary
+              }}
+              title="AI Overlay"
+              data-dev-id="ai-overlay-toggle"
+              data-dev-action="toggleAiOverlay"
+            >
+              <Bot className="w-4 h-4" />
+              AI
+            </button>
             <div className="px-4 py-1.5 rounded-lg text-sm flex items-center gap-2"
               style={{
                 backgroundColor: `${theme.colors.success}10`,
@@ -255,7 +275,9 @@ export default function App() {
   return (
     <ThemeProvider>
       <DevModeProvider>
-        <AppContent />
+        <RightPanelProvider>
+          <AppContent />
+        </RightPanelProvider>
       </DevModeProvider>
     </ThemeProvider>
   );
