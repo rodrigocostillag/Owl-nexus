@@ -1,0 +1,195 @@
+CORE.md
+# CORE — Arquitectura Base del Sistema
+
+## 1. Propósito
+
+El CORE es el núcleo de la aplicación. Su función es:
+
+- Gestionar plugins
+- Mantener consistencia de UI/UX
+- Administrar dispositivos
+- Controlar conexiones (SSH, HTTP, etc.)
+- Orquestar la interacción con IA
+
+El CORE **NO implementa features específicas**, solo proporciona la base para que los plugins funcionen.
+
+---
+
+## 2. Filosofía del sistema
+
+- Todo es un plugin
+- Los plugins pueden contener otros plugins (estructura jerárquica)
+- La UI es controlada por templates, no por cada plugin individual
+- El sistema debe ser escalable, modular y automatizable por IA
+
+---
+
+## 3. Estructura de carpetas
+
+
+/core
+/plugins
+/dashboard
+/ssh
+/terminal
+/devices
+/automation
+/klipper
+/templates
+/widgets
+/services
+
+
+---
+
+## 4. Tipos de plugins
+
+### 1. Function Plugin
+- Aparece en el sidebar
+- Representa una sección principal (ej: Dashboard, SSH)
+
+### 2. Sub-plugin
+- Vive dentro de otro plugin
+- Añade funcionalidad específica
+
+### 3. Widget
+- Bloque visual reutilizable
+- Se inserta dentro de templates
+
+### 4. Service
+- Lógica sin UI (ej: conexión SSH, AI agent)
+
+---
+
+## 5. Sistema jerárquico
+
+Ejemplo:
+
+
+SSH (plugin principal)
+├── Terminal
+├── Device Manager
+└── Automation (IA)
+
+
+Cada nivel puede:
+
+- Tener UI
+- Tener lógica
+- Tener subcomponentes
+
+---
+
+## 6. Sistema de Templates
+
+Los templates definen:
+
+- Layout (grid, columnas, etc.)
+- Distribución de widgets
+- Comportamiento visual
+
+### Objetivo:
+
+Evitar que cada plugin tenga que diseñar su UI desde cero.
+
+---
+
+## 7. UI Consistente
+
+El CORE define:
+
+- Colores
+- Tipografía
+- Espaciado
+- Componentes base
+
+Los plugins SOLO llenan contenido, no diseñan la estructura.
+
+---
+
+## 8. Sistema de Widgets
+
+Los widgets son bloques reutilizables:
+
+Ejemplos:
+
+- Terminal
+- Lista de dispositivos
+- Logs
+- Estado
+
+Características:
+
+- Independientes
+- Reutilizables
+- Configurables
+
+---
+
+## 9. Gestión de dispositivos
+
+El CORE mantiene:
+
+- Lista de dispositivos
+- Tipos (printer, esp32, server, etc.)
+- Métodos de conexión
+
+---
+
+## 10. Conexiones
+
+Abstracción única para:
+
+- SSH
+- HTTP
+- WebSocket
+- Serial (futuro)
+
+---
+
+## 11. Sistema de IA
+
+El CORE permite:
+
+- Ejecutar comandos
+- Leer respuestas
+- Controlar múltiples dispositivos
+- Automatizar tareas
+
+---
+
+## 12. Logs
+
+Desde el inicio (START):
+
+- Todo se registra
+- Logs por:
+  - sesión
+  - dispositivo
+  - acción
+  - IA
+
+---
+
+## 13. Flujo general
+
+
+Usuario abre app
+→ CORE carga plugins
+→ Sidebar se genera dinámicamente
+→ Usuario selecciona función
+→ Se aplica template
+→ Se renderizan widgets
+→ Plugins inyectan lógica
+
+
+---
+
+## 14. Objetivo final
+
+Crear un sistema:
+
+- Modular
+- Expandible
+- Automatizable por IA
+- Reutilizable para múltiples proyectos maker

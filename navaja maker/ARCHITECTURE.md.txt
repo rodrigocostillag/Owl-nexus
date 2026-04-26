@@ -1,0 +1,358 @@
+Archivo 16: ARCHITECTURE.md
+# SYSTEM ARCHITECTURE — Plataforma Modular para Makers
+
+---
+
+## 1. Propósito
+
+Definir la arquitectura base del sistema:
+
+- Modular
+- Escalable
+- Extensible mediante plugins
+- Integrada con IA
+- Orientada a dispositivos reales
+
+---
+
+## 2. Concepto clave
+
+> Un sistema operativo modular para controlar hardware, software y automatización desde una sola interfaz
+
+---
+
+## 3. Principios de diseño
+
+---
+
+### 3.1 Modularidad
+
+- Todo es un plugin
+- Core mínimo
+- Extensión dinámica
+
+---
+
+### 3.2 Desacoplamiento
+
+- Los módulos no dependen directamente entre sí
+- Comunicación mediante eventos y servicios
+
+---
+
+### 3.3 Persistencia total
+
+- Todo tiene historial
+- Nada se pierde
+
+---
+
+### 3.4 IA como capa transversal
+
+- No es un módulo aislado
+- Interactúa con todo el sistema
+
+---
+
+### 3.5 Seguridad por diseño
+
+- Credenciales aisladas
+- Permisos controlados
+- Validación constante
+
+---
+
+## 4. Capas del sistema
+
+---
+
+### 4.1 Core Layer
+
+Responsable de:
+
+- Gestión de plugins
+- Event system
+- Settings
+- Seguridad base
+
+---
+
+### 4.2 Service Layer
+
+Servicios centrales:
+
+- Device Manager
+- Credential Manager
+- Notifications
+- Watcher
+
+---
+
+### 4.3 Execution Layer
+
+Donde ocurren acciones:
+
+- Terminal
+- SSH
+- Tasks
+- Automation Flow
+
+---
+
+### 4.4 Data Layer
+
+Gestión de datos:
+
+- GIT
+- Logs
+- Configuraciones
+- Archivos
+
+---
+
+### 4.5 Interface Layer
+
+Interfaz de usuario:
+
+- Dashboard
+- Custom Dashboards
+- Panels
+- Editors
+
+---
+
+### 4.6 Intelligence Layer
+
+- AI Engine
+- Agents
+- Tools
+
+---
+
+## 5. Diagrama conceptual
+
+
+[ UI ]
+↓
+[ Interface Layer ]
+↓
+[ Execution Layer ]
+↓
+[ Service Layer ]
+↓
+[ Core Layer ]
+↓
+[ Data Layer ]
+
+AI → interactúa con todas las capas
+
+
+---
+
+## 6. Sistema de plugins
+
+---
+
+### Tipos
+
+- Core plugins (obligatorios)
+- Function plugins (features)
+- Sub-plugins (extensiones)
+
+---
+
+### Estructura
+
+
+/plugins
+/core
+/functions
+/ssh
+/watcher
+/tasks
+
+
+---
+
+### Registro
+
+Cada plugin define:
+
+- metadata
+- settings
+- hooks
+- tools
+
+---
+
+## 7. Comunicación interna
+
+---
+
+### Event System
+
+- Comunicación desacoplada
+- Base de automatización
+
+---
+
+### Services
+
+- APIs internas
+- Acceso controlado
+
+---
+
+### Hooks
+
+- Extensión de comportamiento
+
+---
+
+## 8. Flujo de ejecución
+
+---
+
+### Ejemplo
+
+
+Usuario / IA inicia acción
+→ Terminal ejecuta
+→ SSH conecta
+→ Device Manager resuelve
+→ Credential Manager autoriza
+→ Resultado se registra
+→ Notification se genera
+
+
+---
+
+## 9. Sistema de eventos
+
+Eventos clave:
+
+- device_online
+- device_offline
+- task_executed
+- config_changed
+
+---
+
+## 10. Sistema de reglas
+
+- Basado en eventos
+- Automatización
+
+---
+
+## 11. Gestión de estado
+
+---
+
+### Estado dinámico
+
+- Dispositivos
+- Conexiones
+
+---
+
+### Estado persistente
+
+- Configuración
+- Archivos
+
+---
+
+## 12. Manejo de conflictos
+
+---
+
+### Problemas
+
+- Cambios simultáneos
+- Estados inconsistentes
+
+---
+
+### Solución
+
+- Prioridades
+- Versionado
+- Validación
+
+---
+
+## 13. Seguridad
+
+---
+
+- Credential Manager (vault)
+- Validación de acciones
+- Control de acceso
+
+---
+
+## 14. Integración con IA
+
+---
+
+### Capacidades
+
+- Ejecutar acciones
+- Leer estado
+- Crear automatizaciones
+
+---
+
+### Restricciones
+
+- No acceso directo a credenciales
+- Permisos controlados
+
+---
+
+## 15. Persistencia
+
+---
+
+Se almacena:
+
+- Dispositivos
+- Configuraciones
+- Logs
+- Archivos
+- Credenciales (cifradas)
+
+---
+
+## 16. Escalabilidad
+
+---
+
+Preparado para:
+
+- Más dispositivos
+- Más plugins
+- Distribución futura
+
+---
+
+## 17. Objetivo final
+
+Crear una plataforma donde:
+
+- Todo está conectado
+- Todo es automatizable
+- Todo tiene contexto
+- Todo es extensible
+
+---
+
+## 18. Resultado
+
+Un sistema que funciona como:
+
+- OS para makers
+- Centro de control de dispositivos
+- Plataforma de automatización
+- Entorno de desarrollo

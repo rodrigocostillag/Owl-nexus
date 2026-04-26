@@ -1,0 +1,349 @@
+Archivo 15: SETTINGS.md
+# SETTINGS — Configuración Global del Sistema
+
+## 1. Propósito
+
+El módulo SETTINGS centraliza toda la configuración del sistema:
+
+- Configuración global
+- Configuración por módulo/plugin
+- Gestión de conflictos
+- Preferencias del usuario
+
+---
+
+## 2. Concepto clave
+
+> Un solo lugar para controlar todo el comportamiento del sistema
+
+---
+
+## 3. Arquitectura general
+
+El sistema de configuración está dividido en:
+
+---
+
+### 3.1 Core Settings (siempre presentes)
+
+- Sistema base
+- Seguridad
+- UI
+- IA
+
+---
+
+### 3.2 Module Settings (dinámicos)
+
+- Cada plugin registra su configuración
+- Se agregan automáticamente al sistema
+
+---
+
+## 4. Estructura general
+
+
+/settings
+/core
+/modules
+/ssh
+/watcher
+/ai
+/git
+
+
+---
+
+## 5. Core Settings (obligatorios)
+
+---
+
+### 5.1 Sistema
+
+- Idioma
+- Región
+- Timezone
+- Logs globales
+
+---
+
+### 5.2 Seguridad
+
+- Master key (Credential Manager)
+- Permisos de IA
+- Confirmaciones globales
+- Control de acceso
+
+---
+
+### 5.3 UI
+
+- Tema (dark/light)
+- Layout
+- Animaciones
+- Densidad de información
+
+---
+
+### 5.4 IA
+
+- Proveedor por defecto
+- Límites de tokens
+- Modo (manual / asistido / automático)
+- Configuración de agentes
+
+---
+
+## 6. Module Settings (plugins)
+
+Cada plugin define su propia configuración:
+
+---
+
+### Ejemplo: SSH
+
+
+ssh:
+default_port: 22
+timeout: 10
+retry: 3
+
+
+---
+
+### Ejemplo: Watcher
+
+
+watcher:
+scan_interval_fast: 5
+scan_interval_slow: 30
+
+
+---
+
+## 7. Registro automático de configuración
+
+---
+
+### Concepto
+
+Cada plugin debe exponer:
+
+
+registerSettings()
+
+
+---
+
+### Resultado
+
+- Se agrega automáticamente a SETTINGS
+- Se muestra en UI
+- Se guarda en sistema
+
+---
+
+## 8. UI del sistema
+
+---
+
+### 8.1 Panel principal
+
+- Lista de categorías:
+  - Core
+  - Plugins
+
+---
+
+### 8.2 Navegación
+
+- Sidebar por módulos
+- Tabs por categorías
+
+---
+
+### 8.3 Vista de configuración
+
+- Inputs dinámicos
+- Validación en tiempo real
+
+---
+
+## 9. Sistema de conflictos (MUY IMPORTANTE)
+
+---
+
+### 9.1 Problema
+
+Conflictos pueden ocurrir cuando:
+
+- Dos plugins modifican lo mismo
+- IA ejecuta cambios simultáneos
+- Usuario cambia configuración en paralelo
+
+---
+
+### 9.2 Solución
+
+Sistema de resolución de conflictos integrado
+
+---
+
+### 9.3 Tipos de conflicto
+
+---
+
+#### 1. Escritura simultánea
+
+- Dos cambios al mismo valor
+
+---
+
+#### 2. Configuración incompatible
+
+- Valores que no pueden coexistir
+
+---
+
+#### 3. Estado inconsistente
+
+- Diferencias entre módulos
+
+---
+
+## 10. Estrategias de resolución
+
+---
+
+### 10.1 Prioridad
+
+Orden de prioridad:
+
+1. Usuario
+2. Sistema crítico
+3. IA
+4. Plugins
+
+---
+
+### 10.2 Versionado
+
+- Cada cambio genera versión
+- Posibilidad de rollback
+
+---
+
+### 10.3 Confirmación
+
+- Para conflictos críticos:
+  - pedir confirmación al usuario
+
+---
+
+### 10.4 Merge inteligente
+
+- Combinar configuraciones cuando sea posible
+
+---
+
+## 11. Historial de configuración
+
+---
+
+Se guarda:
+
+- Cambios realizados
+- Quién los hizo (usuario / IA / sistema)
+- Timestamp
+
+---
+
+### Ejemplo
+
+
+Cambio:
+→ watcher.scan_interval: 5 → 10
+→ origen: IA
+
+
+---
+
+## 12. Integración con GIT
+
+- Versionado de configuraciones
+- Backup automático
+- Restauración
+
+---
+
+## 13. Integración con IA
+
+La IA puede:
+
+- Leer configuraciones
+- Sugerir cambios
+- Aplicar cambios (según permisos)
+
+---
+
+### Ejemplo
+
+
+"Optimiza mi red"
+
+→ cambia configuración de watcher y network
+
+
+---
+
+## 14. Validación
+
+- Validación de tipo
+- Rangos permitidos
+- Reglas personalizadas
+
+---
+
+## 15. Perfiles de configuración
+
+Permite:
+
+- Guardar perfiles
+- Cambiar rápidamente
+
+---
+
+### Ejemplo
+
+- Modo desarrollo
+- Modo producción
+- Modo testing
+
+---
+
+## 16. Persistencia
+
+Se guarda:
+
+- Config global
+- Config por plugin
+- Historial
+
+---
+
+## 17. Seguridad
+
+- Protección de cambios críticos
+- Confirmaciones obligatorias
+- Logs completos
+
+---
+
+## 18. Objetivo final
+
+Crear un sistema donde:
+
+- Todo es configurable
+- No hay conflictos sin control
+- Cada módulo se integra automáticamente
+- La IA puede operar sin romper el sistema

@@ -1,0 +1,167 @@
+Archivo 2: DASHBOARD.md
+# DASHBOARD — Vista Principal del Sistema
+
+## 1. Propósito
+
+El Dashboard es la vista central donde el usuario puede:
+
+- Ver todos los dispositivos
+- Acceder rápidamente a funciones
+- Supervisar estado general
+- Ejecutar acciones básicas
+
+---
+
+## 2. Tipo de plugin
+
+- Function Plugin (nivel raíz)
+- Visible en sidebar
+
+---
+
+## 3. Objetivo de diseño
+
+- Rápido acceso
+- Información clara
+- Interacción directa
+- Extensible por otros plugins
+
+---
+
+## 4. Componentes principales
+
+### 1. Lista de dispositivos
+
+Muestra:
+
+- Nombre
+- Tipo
+- Estado (online/offline)
+- Tags
+
+---
+
+### 2. Acciones rápidas
+
+Por dispositivo:
+
+- Conectar por SSH
+- Abrir interfaz web
+- Ver detalles
+- Ejecutar comandos básicos
+
+---
+
+### 3. Estado general
+
+Opcional:
+
+- Número de dispositivos activos
+- Alertas
+- Estado del sistema
+
+---
+
+## 5. Integración con plugins
+
+El Dashboard es extensible.
+
+Otros plugins pueden:
+
+- Agregar widgets
+- Agregar información extra
+- Modificar tarjetas de dispositivos
+
+---
+
+## 6. Ejemplo de extensiones
+
+### Plugin: Klipper
+
+Añade:
+
+- Temperatura
+- Progreso de impresión
+- Cámara
+
+---
+
+### Plugin: OpenWRT
+
+Añade:
+
+- Uso de red
+- Estado del router
+
+---
+
+### Plugin: ESP32
+
+Añade:
+
+- Logs en vivo
+- Estado del firmware
+
+---
+
+## 7. Template del Dashboard
+
+Layout tipo:
+
+
+[ Dispositivos ]
+[ Widgets dinámicos ]
+[ Estado general ]
+
+
+---
+
+## 8. Interacción con SSH
+
+Desde el Dashboard:
+
+- Se puede abrir terminal directamente
+- Ejecutar comandos rápidos
+- Ver salida en tiempo real
+
+---
+
+## 9. Interacción con IA
+
+El Dashboard permite:
+
+- Ejecutar acciones automáticas
+- Controlar múltiples dispositivos
+- Ver resultados centralizados
+
+---
+
+## 10. Flujo de uso
+
+
+Usuario entra al Dashboard
+→ Ve dispositivos
+→ Selecciona uno
+→ Ejecuta acción
+→ Puede abrir plugin específico (ej: SSH)
+
+
+---
+
+## 11. Escalabilidad
+
+El Dashboard debe soportar:
+
+- Muchos dispositivos
+- Diferentes tipos
+- Widgets dinámicos
+
+---
+
+## 12. Objetivo final
+
+Convertirse en:
+
+- Centro de control
+- Vista rápida del sistema
+- Punto de entrada a todas las funciones

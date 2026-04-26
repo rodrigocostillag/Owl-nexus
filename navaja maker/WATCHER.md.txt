@@ -1,0 +1,272 @@
+WATCHER.md
+# WATCHER — Monitor y Escáner de Red
+
+## 1. Propósito
+
+El Watcher es un módulo para:
+
+- Escanear redes locales
+- Detectar dispositivos conectados/desconectados
+- Visualizar información avanzada (IP, MAC, etc.)
+- Gestionar dispositivos como entidades del sistema
+
+Inspirado en herramientas tipo NetWatcher, pero extendido para integración total con el sistema.
+
+---
+
+## 2. Tipo de plugin
+
+- Function Plugin (nivel raíz)
+- Visible en sidebar
+- Altamente integrado con Device Manager
+
+---
+
+## 3. Objetivos principales
+
+- Descubrimiento automático de dispositivos
+- Monitoreo en tiempo real
+- Configuración flexible de redes
+- Interfaz tipo tabla avanzada (estilo Excel)
+- Persistencia de datos personalizados
+
+---
+
+## 4. Secciones principales
+
+### 4.1 Configuración de red
+
+Permite definir:
+
+- IP local actual
+- Netmask
+- Gateway
+
+Estas deben obtenerse automáticamente del sistema al iniciar.
+
+---
+
+### 4.2 Configuración de escaneo
+
+#### Parámetros configurables:
+
+- Velocidad de escaneo rápido
+- Velocidad de escaneo lento
+- Intervalos de actualización
+- Timeout por dispositivo
+
+---
+
+### 4.3 Tipos de escaneo
+
+#### 1. Escaneo rápido
+
+- Detecta dispositivos activos rápidamente
+- Uso: descubrimiento inicial
+
+#### 2. Escaneo lento
+
+- Verifica persistencia de conexión
+- Detecta desconexiones recientes
+- Más preciso pero más lento
+
+---
+
+### 4.4 Subredes y rangos
+
+Permite configurar:
+
+- Subred base (ej: 192.168.1.0/24)
+- Rangos personalizados
+
+Ejemplo:
+
+
+Desde: 192.168.0.1
+Hasta: 192.168.3.28
+
+
+También permite:
+
+- Escaneo por bloques (ej: .0.x, .1.x, .2.x)
+- Redes conocidas guardadas
+
+---
+
+### 4.5 Redes conocidas
+
+Lista de subredes guardadas:
+
+- Nombre
+- Rango
+- Estado
+
+Permite:
+
+- Activar/desactivar escaneo por red
+- Cambiar prioridades
+
+---
+
+## 5. Tabla principal (core del Watcher)
+
+### Características
+
+- Interactiva tipo Excel
+- Redimensionable (columnas)
+- Reordenable
+- Editable en ciertos campos
+- Persistente
+
+---
+
+### 5.1 Columnas base
+
+- Estado (conectado/desconectado)
+- IPv4
+- IPv6
+- MAC
+- Hostname
+- Adaptador de red
+- Tiempo de respuesta (ping)
+- Fabricante (opcional)
+
+---
+
+### 5.2 Columnas personalizadas
+
+- User Text (editable)
+- Username (editable)
+
+Persisten entre sesiones.
+
+---
+
+### 5.3 Estado visual
+
+- 🟢 Activo → color destacado
+- ⚪ Inactivo → sombreado/gris
+- Cambio en tiempo real
+
+---
+
+## 6. Interacción de la tabla
+
+- Selección múltiple
+- Edición inline
+- Ordenamiento por columnas
+- Filtros
+- Búsqueda rápida
+
+---
+
+## 7. Acciones principales
+
+- Iniciar escaneo
+- Pausar escaneo
+- Limpiar tabla
+- Reiniciar datos
+
+---
+
+## 8. Integración con Device Manager
+
+Cuando se detecta un dispositivo:
+
+- Puede registrarse automáticamente
+- Puede vincularse con dispositivos existentes
+- Puede asignarse tipo (router, ESP32, etc.)
+
+---
+
+## 9. Sistema de iconos/logotipos
+
+### Características:
+
+- Icono por dispositivo
+- Editable por el usuario
+- Soporte para SVG
+
+---
+
+### Funcionalidades:
+
+- Subir iconos personalizados
+- Asignar icono por tipo o por dispositivo
+- Persistencia local
+
+---
+
+## 10. Sistema de pairing
+
+Permite:
+
+- Registrar dispositivos externos (ej: Android Wear)
+- Asociar dispositivos detectados
+- Guardar claves de acceso
+
+---
+
+## 11. Integración con SSH
+
+Desde la tabla:
+
+- Botón de conexión SSH
+- Configuración de credenciales
+- Gestión de llaves
+
+---
+
+## 12. Logs
+
+El Watcher registra:
+
+- Escaneos
+- Cambios de estado
+- Nuevos dispositivos
+- Desconexiones
+
+---
+
+## 13. Flujo de funcionamiento
+
+
+Inicio
+→ Detecta red local automáticamente
+→ Ejecuta escaneo rápido
+→ Ejecuta escaneo lento en paralelo
+→ Actualiza tabla en tiempo real
+→ Guarda datos persistentes
+
+
+---
+
+## 14. Persistencia
+
+Se guarda:
+
+- Dispositivos detectados
+- Configuración de red
+- Rangos personalizados
+- Iconos
+- Campos editados por usuario
+
+---
+
+## 15. Escalabilidad
+
+Debe soportar:
+
+- Múltiples subredes
+- Grandes rangos de IP
+- Integración con otros plugins
+
+---
+
+## 16. Objetivo final
+
+Convertirse en:
+
+- Sistema central de descubrimiento de red
+- Fuente de verdad para dispositivos
+- Base para automatización (IA, SSH, etc.)

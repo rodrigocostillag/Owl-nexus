@@ -1,0 +1,282 @@
+Archivo 10: NOTIFICATIONS.md
+# NOTIFICATIONS — Sistema de Alertas y Notificaciones
+
+## 1. Propósito
+
+El sistema de notificaciones permite:
+
+- Informar eventos importantes del sistema
+- Alertar sobre problemas o estados críticos
+- Mostrar resultados de acciones automáticas
+- Mantener al usuario informado sin revisar logs manualmente
+
+---
+
+## 2. Tipo de módulo
+
+- Core service + integración con plugins
+- Accesible desde UI global
+
+---
+
+## 3. Concepto clave
+
+> Todo evento importante debe poder convertirse en una notificación útil
+
+---
+
+## 4. Tipos de notificaciones
+
+---
+
+### 4.1 Informativas
+
+- Estado de dispositivos
+- Resultados de acciones
+- Logs relevantes
+
+---
+
+### 4.2 Advertencias
+
+- Posibles problemas
+- Cambios inesperados
+
+---
+
+### 4.3 Críticas
+
+- Dispositivo offline
+- Error en ejecución
+- Fallo en red o SSH
+
+---
+
+## 5. Origen de notificaciones
+
+---
+
+### Watcher
+
+- Dispositivo conectado/desconectado
+
+---
+
+### Device Manager
+
+- Cambios de estado
+- Eventos
+
+---
+
+### SSH / Terminal
+
+- Errores de comandos
+- Resultados importantes
+
+---
+
+### Network Manager
+
+- Cambios de red
+- Problemas de conectividad
+
+---
+
+### GIT
+
+- Cambios en archivos
+- Conflictos
+- Actualizaciones
+
+---
+
+### AI
+
+- Acciones ejecutadas
+- Resultados de automatización
+
+---
+
+## 6. Estructura conceptual
+
+
+Notification:
+id
+type: info | warning | critical
+source
+message
+timestamp
+device_id (opcional)
+action (opcional)
+
+
+---
+
+## 7. UI del sistema
+
+---
+
+### 7.1 Panel de notificaciones
+
+- Lista de eventos recientes
+- Orden cronológico
+- Filtrado por tipo
+
+---
+
+### 7.2 Notificaciones en tiempo real
+
+- Popups
+- Alertas visuales
+- Indicadores en UI
+
+---
+
+### 7.3 Centro de notificaciones
+
+- Historial completo
+- Búsqueda
+- Filtros avanzados
+
+---
+
+## 8. Acciones desde notificaciones
+
+Cada notificación puede permitir:
+
+- Abrir dispositivo relacionado
+- Ejecutar acción rápida
+- Ver logs
+- Ignorar / marcar como leído
+
+---
+
+## 9. Integración con eventos
+
+El sistema se conecta directamente con:
+
+- Event System (Device Manager)
+- Reglas automáticas
+
+---
+
+### Flujo
+
+
+Evento ocurre
+→ se genera notificación
+→ se muestra al usuario
+
+
+---
+
+## 10. Integración con reglas automáticas
+
+Permite:
+
+- Crear reglas basadas en notificaciones
+- Automatizar respuestas
+
+---
+
+### Ejemplo
+
+
+IF device_offline
+THEN notificar + ejecutar script
+
+
+---
+
+## 11. Integración con IA
+
+La IA puede:
+
+- Leer notificaciones
+- Generar acciones
+- Priorizar eventos
+
+---
+
+### Ejemplo
+
+
+"¿Qué problemas hay?"
+
+→ IA revisa notificaciones críticas
+
+
+---
+
+## 12. Canales de notificación
+
+---
+
+### 12.1 Internos
+
+- UI de la app
+- Panel lateral
+- Dashboard
+
+---
+
+### 12.2 Externos (futuro)
+
+- Android Wear (pairing)
+- Notificaciones push
+- Email (opcional)
+
+---
+
+## 13. Prioridad y agrupación
+
+- Agrupar eventos similares
+- Priorizar críticos
+- Evitar spam
+
+---
+
+## 14. Persistencia
+
+Se guarda:
+
+- Historial completo
+- Estado (leído/no leído)
+- Relación con dispositivos
+
+---
+
+## 15. Logs relacionados
+
+Cada notificación puede:
+
+- Vincular a logs
+- Mostrar contexto adicional
+
+---
+
+## 16. Seguridad
+
+- No mostrar datos sensibles
+- Filtrar contenido crítico
+
+---
+
+## 17. Configuración
+
+El usuario puede definir:
+
+- Qué notificaciones recibir
+- Nivel de prioridad
+- Canales activos
+
+---
+
+## 18. Objetivo final
+
+Crear un sistema donde:
+
+- Nada importante pase desapercibido
+- El usuario no tenga que revisar logs manualmente
+- La IA pueda actuar sobre eventos

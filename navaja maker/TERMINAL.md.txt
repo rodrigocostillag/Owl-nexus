@@ -1,0 +1,550 @@
+Archivo 9: TERMINAL.md
+# TERMINAL — Sistema Unificado de Consolas
+
+## 1. Propósito
+
+El módulo TERMINAL permite:
+
+- Ejecutar comandos locales (Linux)
+- Conectarse a dispositivos remotos (SSH)
+- Interactuar con múltiples dispositivos simultáneamente
+- Servir como interfaz base para automatización y AI
+
+---
+
+## 2. Tipo de plugin
+
+- Function Plugin (nivel raíz)
+- Integrado con SSH, AI, Device Manager
+
+---
+
+## 3. Concepto clave
+
+> Una sola terminal para controlar todo el sistema (local + remoto)
+
+---
+
+## 4. Tipos de terminal
+
+---
+
+### 4.1 Terminal local
+
+- Ejecuta comandos en el sistema host
+- Bash / Zsh
+
+---
+
+### 4.2 Terminal remota (SSH)
+
+- Conexión a dispositivos
+- Usa Credential Manager
+- Basado en Device Manager
+
+---
+
+### 4.3 Terminal multi-dispositivo
+
+- Ejecuta comandos en múltiples dispositivos
+- Paralelo o secuencial
+
+---
+
+## 5. Funcionalidades principales
+
+---
+
+### 5.1 Ejecución de comandos
+
+- Comandos directos
+- Scripts
+- Pipelines
+
+---
+
+### 5.2 Streaming en tiempo real
+
+- Output en vivo
+- Logs continuos
+- Manejo de errores
+
+---
+
+### 5.3 Historial global
+
+- Historial por:
+  - usuario
+  - dispositivo
+  - sesión
+
+---
+
+### 5.4 Sesiones
+
+- Múltiples sesiones simultáneas
+- Guardado de sesiones
+- Reanudar sesiones
+
+---
+
+## 6. Integración con Device Manager
+
+- Selección de dispositivo
+- Resolución automática de IP
+- Uso de credenciales asociadas
+
+---
+
+## 7. Integración con Credential Manager
+
+- Uso automático de claves
+- Sin exponer credenciales
+- Soporte para múltiples métodos
+
+---
+
+## 8. Integración con AI
+
+La IA puede:
+
+- Ejecutar comandos
+- Leer resultados
+- Automatizar tareas
+
+---
+
+### Ejemplo
+
+
+"Reinicia todos los ESP32"
+
+→ IA ejecuta comando en múltiples dispositivos
+
+
+---
+
+## 9. Modos de ejecución
+
+---
+
+### 9.1 Manual
+
+- Usuario escribe comandos
+
+---
+
+### 9.2 Automatizado
+
+- Scripts definidos
+- Integración con Tasks
+
+---
+
+### 9.3 IA
+
+- Ejecución mediante lenguaje natural
+
+---
+
+## 10. Multi-dispositivo
+
+---
+
+### Modos
+
+- Paralelo
+- Secuencial
+
+---
+
+### Ejemplo
+
+
+targets: [device_1, device_2]
+
+command: "git pull"
+
+
+---
+
+## 11. Control de ejecución
+
+- Cancelar comando
+- Timeout
+- Reintentos
+
+---
+
+## 12. Logs
+
+Se registran:
+
+- Comandos ejecutados
+- Outputs
+- Errores
+
+---
+
+## 13. UI esperada
+
+---
+
+### Panel principal
+
+- Consola tipo terminal
+- Output en tiempo real
+
+---
+
+### Panel lateral
+
+- Lista de dispositivos
+- Selección rápida
+
+---
+
+### Tabs
+
+- Múltiples sesiones
+- Cambio rápido
+
+---
+
+## 14. Features avanzados
+
+---
+
+### 14.1 Autocompletado
+
+- Comandos
+- Dispositivos
+
+---
+
+### 14.2 Variables
+
+Permite usar variables:
+
+
+$device_ip
+$device_name
+
+
+---
+
+### 14.3 Alias
+
+- Comandos personalizados
+- Atajos
+
+---
+
+## 15. Integración con GIT
+
+- Ejecutar comandos git
+- Sincronizar proyectos
+- Automatizar deploys
+
+---
+
+## 16. Integración con Watcher
+
+- Ejecutar comandos en dispositivos detectados
+- Filtrar por estado (online/offline)
+
+---
+
+## 17. Seguridad
+
+- Validación de comandos peligrosos
+- Confirmación para acciones críticas
+- Restricciones por usuario/IA
+
+---
+
+## 18. Persistencia
+
+Se guarda:
+
+- Historial
+- Sesiones
+- Configuración
+
+---
+
+## 19. Tools (IA)
+
+Expone:
+
+- execute_command
+- execute_multi
+- get_output
+- get_history
+
+---
+
+## 20. Flujo general
+
+
+Usuario / IA ejecuta comando
+→ Terminal interpreta
+→ Selecciona dispositivo(s)
+→ Usa credenciales
+→ Ejecuta
+→ Devuelve resultado
+
+
+---
+
+## 21. Objetivo final
+
+Convertirse en:
+
+- Centro de control operativo
+- Interfaz principal para desarrollo
+- Base para automatización avanzada
+
+---
+
+## 22. Sistema de Shells (Terminal real extensible)
+
+### Propósito
+
+Permitir que la terminal utilice shells reales del sistema (especialmente Linux) para aprovechar:
+
+- Plugins existentes
+- Temas
+- Configuraciones avanzadas
+- Ecosistema real (bash, zsh, etc.)
+
+---
+
+## 23. Tipos de shell soportados
+
+---
+
+### 23.1 Shell local del sistema
+
+- Bash
+- Zsh
+- Fish
+
+---
+
+### 23.2 Shell embebido
+
+- Ejecutado dentro de la aplicación
+- Controlado por el sistema
+
+---
+
+### 23.3 Shell remoto (SSH)
+
+- Replica el shell del dispositivo remoto
+- Mantiene compatibilidad con entorno real
+
+---
+
+## 24. Configuración de shell
+
+El usuario puede seleccionar:
+
+- Shell por defecto
+- Shell por sesión
+- Shell por dispositivo
+
+---
+
+### Ejemplo
+
+
+Default shell: zsh
+Device ESP32: bash
+
+
+---
+
+## 25. Soporte para plugins de shell (clave)
+
+El sistema permite usar:
+
+- Plugins de Zsh
+- Plugins de Bash
+- Frameworks existentes
+
+---
+
+### Ejemplos de ecosistema compatible
+
+- oh-my-zsh
+- starship
+- powerlevel10k
+
+---
+
+## 26. Temas y personalización
+
+Permite:
+
+- Colores personalizados
+- Prompts avanzados
+- Indicadores dinámicos
+
+---
+
+### Ejemplo
+
+
+user@device:~/project (git:main) ➜
+
+
+---
+
+## 27. Archivos de configuración
+
+El sistema respeta:
+
+- .bashrc
+- .zshrc
+- .profile
+
+---
+
+### Características
+
+- Carga automática
+- Editable desde la UI
+- Versionado mediante GIT
+
+---
+
+## 28. Perfiles de terminal
+
+Permite crear perfiles:
+
+---
+
+### Ejemplo
+
+- Dev profile → zsh + plugins + alias
+- Minimal → bash limpio
+- Remote → optimizado para SSH
+
+---
+
+## 29. Integración con GIT
+
+- Versionar configuraciones de shell
+- Sincronizar entre dispositivos
+- Restaurar entornos
+
+---
+
+## 30. Integración con AI
+
+La IA puede:
+
+- Leer configuración del shell
+- Sugerir alias o mejoras
+- Crear scripts automáticamente
+
+---
+
+### Ejemplo
+
+
+"Optimiza mi terminal para desarrollo en ESP32"
+
+→ IA configura zsh + plugins + alias
+
+
+---
+
+## 31. Aislamiento y seguridad
+
+- Cada shell puede ejecutarse en entorno aislado
+- Prevención de ejecución peligrosa
+- Control de permisos
+
+---
+
+## 32. Objetivo de este sistema
+
+Convertir la terminal en:
+
+- Un entorno real de desarrollo
+- Compatible con herramientas existentes
+- Altamente personalizable
+- Integrado con todo el sistema
+
+---
+
+## 33. Objetivos prioritarios del módulo
+
+### Prioridad 1 — Integración con terminales Linux reales
+
+El sistema debe enfocarse primero en:
+
+- Usar shells reales del sistema (bash, zsh, fish)
+- Ejecutar entorno Linux completo
+- Evitar reinventar funcionalidades existentes
+
+---
+
+### Requisitos clave
+
+- Compatibilidad con Zsh como opción principal
+- Soporte para frameworks existentes:
+  - oh-my-zsh
+  - starship
+  - powerlevel10k
+
+---
+
+### Objetivo práctico
+
+> Poder usar la terminal igual que en una distro Linux real
+
+---
+
+### Capacidades esperadas
+
+- Soporte completo de comandos Linux
+- Uso de herramientas estándar:
+  - git
+  - ssh
+  - tmux
+  - htop
+- Configuración mediante:
+  - .bashrc
+  - .zshrc
+
+---
+
+### Personalización
+
+- Temas avanzados
+- Colores dinámicos
+- Prompts inteligentes
+- Alias personalizados
+
+---
+
+### Integración con el sistema
+
+- Versionado de configuración (GIT)
+- Uso por IA
+- Sincronización entre dispositivos
+
+---
+
+### Resultado esperado
+
+Un entorno donde:
+
+- La terminal no se siente limitada
+- Se comporta como un sistema Linux real
+- Se pueden reutilizar herramientas existentes
+
+

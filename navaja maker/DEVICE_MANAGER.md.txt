@@ -1,0 +1,409 @@
+Archivo 7: DEVICE_MANAGER.md
+# DEVICE MANAGER — Sistema Central de Dispositivos
+
+## 1. Propósito
+
+El Device Manager es el núcleo que gestiona todos los dispositivos del sistema.
+
+Responsabilidades:
+
+- Identificar dispositivos de forma única
+- Mantener estado actualizado
+- Centralizar conexiones
+- Relacionar dispositivos con proyectos, logs y configuraciones
+- Servir como base para IA, Watcher, SSH, Git y Network
+
+---
+
+## 2. Concepto clave
+
+> El Device Manager es la fuente de verdad de todos los dispositivos
+
+---
+
+## 3. Identidad del dispositivo
+
+Cada dispositivo se identifica por:
+
+- MAC address (principal)
+- ID interno
+- Nombre definido por el usuario
+- Tipo de dispositivo
+
+---
+
+### Ejemplo conceptual
+
+
+Device:
+id: device_001
+mac: AA:BB:CC:DD:EE:FF
+name: "Printer Ender 3"
+type: "3d_printer"
+
+
+---
+
+## 4. Estructura del dispositivo
+
+---
+
+### 4.1 Identidad
+
+- ID
+- MAC
+- Nombre
+- Tipo
+
+---
+
+### 4.2 Estado dinámico
+
+- IP actual
+- Estado (online/offline)
+- Última vez visto
+- Latencia
+
+---
+
+### 4.3 Conectividad
+
+- SSH
+- Web UI
+- API endpoints
+
+---
+
+### 4.4 Metadata
+
+- Tags
+- Notas
+- Ubicación
+- Campos personalizados
+
+---
+
+### 4.5 Recursos asociados
+
+- Archivos (GIT)
+- Logs
+- Firmware
+- Configuraciones
+
+---
+
+## 5. Flujo de descubrimiento
+
+
+Watcher detecta dispositivo
+→ obtiene MAC
+→ consulta Device Manager
+
+SI no existe:
+→ crear nuevo dispositivo
+
+SI existe:
+→ actualizar IP y estado
+
+
+---
+
+## 6. Relación con otros módulos
+
+---
+
+### Watcher
+
+- Provee IP y estado
+- Alimenta datos dinámicos
+
+---
+
+### SSH
+
+- Usa credenciales del dispositivo
+- Ejecuta comandos
+
+---
+
+### GIT
+
+- Guarda archivos por dispositivo
+- Maneja firmware y configuraciones
+
+---
+
+### Network Manager
+
+- Permite modificar conectividad
+
+---
+
+### AI
+
+- Usa Device Manager para identificar dispositivos
+- Nunca trabaja directamente con IPs
+
+---
+
+## 7. Sistema de eventos
+
+### Propósito
+
+Permitir reacciones automáticas ante cambios en dispositivos.
+
+---
+
+### Tipos de eventos
+
+- device_discovered
+- device_online
+- device_offline
+- device_updated
+- device_removed
+- config_changed
+- firmware_updated
+
+---
+
+### Ejemplo
+
+
+Evento: device_offline
+→ sistema detecta desconexión
+→ dispara acciones
+
+
+---
+
+## 8. Reglas automáticas
+
+### Propósito
+
+Automatizar comportamiento del sistema basado en eventos.
+
+---
+
+### Estructura conceptual
+
+
+IF condición
+THEN acción
+
+
+---
+
+### Ejemplos
+
+---
+
+#### 1. Auto backup
+
+
+IF config_changed
+THEN guardar versión en GIT
+
+
+---
+
+#### 2. Notificación
+
+
+IF device_offline
+THEN alertar usuario
+
+
+---
+
+#### 3. Acción automática
+
+
+IF device_online
+THEN ejecutar script SSH
+
+
+---
+
+## 9. Motor de reglas
+
+Características:
+
+- Evaluación en tiempo real
+- Configurable por usuario
+- Integrado con IA
+- Soporta múltiples condiciones
+
+---
+
+## 10. Hooks para plugins
+
+### Propósito
+
+Permitir que los plugins reaccionen a eventos del sistema.
+
+---
+
+### Tipos de hooks
+
+- onDeviceCreate
+- onDeviceUpdate
+- onDeviceOnline
+- onDeviceOffline
+- onConfigChange
+
+---
+
+### Ejemplo
+
+Plugin SSH:
+
+
+onDeviceOnline:
+→ intentar reconectar SSH
+
+
+---
+
+### Ejemplo
+
+Plugin GIT:
+
+
+onConfigChange:
+→ guardar nueva versión
+
+
+---
+
+## 11. Integración con IA
+
+La IA puede:
+
+- Escuchar eventos
+- Crear reglas automáticamente
+- Ejecutar acciones sobre dispositivos
+
+---
+
+### Ejemplo
+
+
+"Cuando la impresora se desconecte, reiníciala"
+
+→ crea regla automática
+
+
+---
+
+## 12. Persistencia
+
+Se guarda:
+
+- Dispositivos
+- Historial de eventos
+- Reglas
+- Estado
+
+---
+
+## 13. Logs
+
+Incluye:
+
+- Eventos
+- Cambios de estado
+- Acciones ejecutadas
+- Interacciones con IA
+
+---
+
+## 14. UI esperada
+
+---
+
+### Vista principal
+
+- Lista de dispositivos
+- Estado en tiempo real
+- Acciones rápidas
+
+---
+
+### Vista detalle
+
+- Información completa
+- Historial
+- Logs
+- Configuración
+
+---
+
+### Vista de eventos
+
+- Lista de eventos recientes
+- Filtros
+- Búsqueda
+
+---
+
+### Vista de reglas
+
+- Crear/editar reglas
+- Activar/desactivar
+- Ver ejecución
+
+---
+
+## 15. Flujo completo del sistema
+
+
+Watcher detecta dispositivo
+→ Device Manager actualiza estado
+→ Evento es generado
+→ Motor de reglas evalúa condiciones
+→ Se ejecutan acciones
+→ Plugins reaccionan (hooks)
+→ IA puede intervenir
+
+
+---
+
+## 16. Tools (IA)
+
+Este módulo expone:
+
+- get_devices
+- get_device_by_id
+- update_device
+- trigger_action
+- create_rule
+- get_events
+
+---
+
+## 17. Seguridad
+
+- Validación de acciones críticas
+- Control de acceso por dispositivo
+- Confirmación para cambios sensibles
+
+---
+
+## 18. Objetivo final
+
+Convertirse en:
+
+- El cerebro de dispositivos del sistema
+- Base de automatización
+- Integrador de todos los módulos
+
+---
+
+## 19. Resultado
+
+Un sistema donde:
+
+- Los dispositivos tienen identidad real
+- Las acciones son automatizables
+- Los eventos generan comportamiento
+- Los plugins trabajan de forma coordinada

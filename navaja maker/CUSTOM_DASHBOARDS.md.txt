@@ -1,0 +1,272 @@
+Archivo 11: CUSTOM_DASHBOARDS.md
+# CUSTOM DASHBOARDS — Paneles Personalizados
+
+## 1. Propósito
+
+El sistema de Custom Dashboards permite:
+
+- Crear paneles personalizados por usuario
+- Visualizar información específica por proyecto, dispositivo o tarea
+- Organizar widgets según necesidades reales
+- Tener vistas rápidas y optimizadas para el flujo de trabajo
+
+---
+
+## 2. Tipo de plugin
+
+- Function Plugin (puede extender el Dashboard principal)
+- Integrado con todos los módulos
+
+---
+
+## 3. Concepto clave
+
+> Cada usuario puede construir su propio panel de control
+
+---
+
+## 4. Tipos de dashboards
+
+---
+
+### 4.1 Dashboard general
+
+- Vista global del sistema
+- Similar al Dashboard base
+
+---
+
+### 4.2 Dashboard por dispositivo
+
+Ejemplo:
+
+- Impresora 3D
+- ESP32
+- Router
+
+---
+
+### 4.3 Dashboard por proyecto
+
+Ejemplo:
+
+- Proyecto Arduino
+- Firmware teclado
+- Sistema de automatización
+
+---
+
+### 4.4 Dashboard por tarea
+
+Ejemplo:
+
+- Monitoreo de red
+- Debugging
+- Deploy
+
+---
+
+## 5. Sistema de widgets
+
+Cada dashboard se construye con widgets:
+
+---
+
+### Ejemplos
+
+- Estado de dispositivo
+- Terminal rápida
+- Logs
+- Temperaturas
+- Uso de red
+- Estado de impresión
+- Botones de acción
+
+---
+
+## 6. Layout
+
+---
+
+### Tipos
+
+- Grid (recomendado)
+- Columnas
+- Libre (drag & drop)
+
+---
+
+### Características
+
+- Redimensionable
+- Reordenable
+- Persistente
+
+---
+
+## 7. Interacción
+
+- Drag & drop
+- Configuración por widget
+- Edición en tiempo real
+
+---
+
+## 8. Integración con plugins
+
+Cada plugin puede:
+
+- Registrar widgets
+- Extender dashboards
+- Añadir información específica
+
+---
+
+### Ejemplo
+
+Plugin Klipper:
+
+- Widget de cámara
+- Estado de impresión
+
+---
+
+## 9. Integración con Device Manager
+
+Permite:
+
+- Filtrar por dispositivo
+- Mostrar estado en tiempo real
+- Ejecutar acciones rápidas
+
+---
+
+## 10. Integración con Terminal
+
+- Ejecutar comandos desde widgets
+- Botones rápidos
+
+---
+
+## 11. Integración con Watcher
+
+- Mostrar estado de red
+- Dispositivos conectados
+
+---
+
+## 12. Integración con AI
+
+La IA puede:
+
+- Crear dashboards automáticamente
+- Sugerir widgets
+- Optimizar layout
+
+---
+
+### Ejemplo
+
+
+"Crea un dashboard para mi impresora"
+
+→ agrega widgets relevantes
+
+
+---
+
+## 13. Configuración de dashboards
+
+Cada dashboard define:
+
+
+Dashboard:
+id
+name
+type
+widgets
+layout
+
+
+---
+
+## 14. Persistencia
+
+Se guarda:
+
+- Layout
+- Widgets
+- Configuración
+- Estado
+
+---
+
+## 15. UI esperada
+
+---
+
+### Editor de dashboard
+
+- Añadir widgets
+- Reordenar
+- Configurar
+
+---
+
+### Vista de uso
+
+- Panel limpio
+- Información clara
+- Interacción rápida
+
+---
+
+## 16. Perfiles de dashboards
+
+Permite:
+
+- Guardar configuraciones
+- Cambiar entre perfiles
+
+---
+
+### Ejemplo
+
+- Dev Mode
+- Monitoring Mode
+- Debug Mode
+
+---
+
+## 17. Compartición
+
+Opcional:
+
+- Exportar dashboards
+- Importar configuraciones
+
+---
+
+## 18. Integración con notificaciones
+
+- Mostrar alertas en widgets
+- Indicadores visuales
+
+---
+
+## 19. Integración con eventos
+
+Permite:
+
+- Actualización automática
+- Reacción a cambios
+
+---
+
+## 20. Objetivo final
+
+Crear un sistema donde:
+
+- Cada usuario tenga su propio panel ideal
+- La información relevante esté siempre visible
+- La interacción sea rápida y directa

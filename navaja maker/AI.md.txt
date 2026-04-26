@@ -1,0 +1,493 @@
+Archivo 4: AI.md
+# AI — Sistema de Inteligencia Artificial y Automatización
+
+## 1. Propósito
+
+El módulo de IA permite:
+
+- Interactuar con toda la aplicación mediante lenguaje natural
+- Automatizar tareas complejas
+- Controlar múltiples dispositivos
+- Ejecutar acciones en otros plugins (Dashboard, Watcher, SSH, etc.)
+
+La IA actúa como un **orquestador central del sistema**.
+
+---
+
+## 2. Tipo de plugin
+
+- Function Plugin (nivel raíz)
+- Visible en sidebar
+- También accesible como overlay global
+
+---
+
+## 3. Comportamiento principal
+
+### Activación
+
+- Botón global ON/OFF
+- Al activarse:
+  - Se abre un panel lateral derecho (tipo overlay)
+  - Estilo similar a asistentes tipo “side panel”
+
+---
+
+## 4. UI del Chat
+
+### Panel lateral derecho
+
+Contiene:
+
+- Historial de conversación
+- Input de comandos
+- Estado del agente
+- Indicador de tokens
+
+---
+
+### Características del chat
+
+- Conversación continua
+- Contexto persistente
+- Capacidad de ejecutar acciones
+- Streaming de respuestas
+
+---
+
+## 5. Capacidades de la IA
+
+La IA puede:
+
+- Leer estado del sistema
+- Ejecutar comandos en dispositivos
+- Modificar configuraciones
+- Consultar datos (Watcher, Dashboard)
+- Automatizar tareas multi-dispositivo
+
+---
+
+### Ejemplos de uso
+
+- "Escanea la red y dime qué dispositivos nuevos hay"
+- "Actualiza todos los ESP32"
+- "Conéctate por SSH a la impresora"
+- "Configura el rango de red a 192.168.0.1 - 192.168.1.255"
+
+---
+
+## 6. Integración con el sistema
+
+La IA tiene acceso a:
+
+- Dashboard
+- Watcher
+- SSH
+- Device Manager
+- Plugins activos
+
+---
+
+### Modelo de interacción
+
+
+Usuario → IA
+IA → interpreta intención
+IA → genera plan
+IA → ejecuta acciones
+IA → devuelve resultado
+
+
+---
+
+## 7. Sistema de proveedores (LLM Providers)
+
+Permite seleccionar el motor de IA:
+
+### Opciones:
+
+- Local (LLaMA / servidor propio)
+- :contentReference[oaicite:0]{index=0}
+- :contentReference[oaicite:1]{index=1}
+- :contentReference[oaicite:2]{index=2}
+
+---
+
+### Configuración por proveedor
+
+Cada uno requiere:
+
+- API Key
+- Endpoint (opcional)
+- Modelo
+- Parámetros (temperatura, max tokens, etc.)
+
+---
+
+## 8. Sistema de agentes
+
+### Propósito
+
+Permitir múltiples agentes especializados.
+
+---
+
+### Ejemplos de agentes
+
+- Network Agent → escaneo y redes
+- SSH Agent → comandos remotos
+- Device Agent → gestión de dispositivos
+- Automation Agent → tareas complejas
+
+---
+
+### Configuración de agentes
+
+- Nombre
+- Rol
+- Permisos
+- Acceso a plugins
+- Prioridad
+
+---
+
+## 9. Orquestación de agentes
+
+La IA puede:
+
+- Usar un solo agente
+- Coordinar múltiples agentes
+- Delegar tareas automáticamente
+
+---
+
+### Ejemplo
+
+
+Task: "Actualizar red completa"
+
+→ Network Agent escanea
+→ SSH Agent ejecuta comandos
+→ Device Agent valida resultados
+
+
+---
+
+## 10. Control de acceso
+
+La IA debe tener permisos controlados:
+
+- Acceso total (modo avanzado)
+- Acceso limitado (modo seguro)
+- Confirmación antes de ejecutar acciones críticas
+
+---
+
+## 11. Optimización de tokens
+
+### Funcionalidades
+
+- Contador de tokens en tiempo real
+- Límite configurable
+- Compresión de contexto
+- Resumen automático de historial
+
+---
+
+### Objetivo
+
+Reducir costos y mejorar eficiencia.
+
+---
+
+## 12. Gestión de contexto
+
+- Contexto persistente por sesión
+- Contexto por plugin
+- Capacidad de limpiar contexto
+
+---
+
+## 13. Logs de IA
+
+Se registran:
+
+- Prompts
+- Respuestas
+- Acciones ejecutadas
+- Uso de tokens
+
+---
+
+## 14. Integración con SSH
+
+La IA puede:
+
+- Ejecutar comandos remotos
+- Leer outputs
+- Tomar decisiones en base a resultados
+
+---
+
+## 15. Integración con Watcher
+
+La IA puede:
+
+- Iniciar escaneos
+- Analizar dispositivos
+- Detectar cambios en red
+
+---
+
+## 16. Flujo completo
+
+
+Usuario escribe comando
+→ IA interpreta
+→ Selecciona agente(s)
+→ Genera plan
+→ Ejecuta acciones en plugins
+→ Recoge resultados
+→ Responde al usuario
+
+
+---
+
+## 17. Configuración avanzada
+
+- Selección de proveedor
+- Configuración de modelos
+- Configuración de agentes
+- Control de tokens
+- Permisos de ejecución
+
+---
+
+---
+
+## 19. Sistema de Tools (Herramientas de IA)
+
+### Propósito
+
+Permitir que la IA y los agentes puedan ejecutar acciones estructuradas dentro del sistema mediante herramientas (tools).
+
+Las tools son la forma en que la IA interactúa realmente con:
+
+- Plugins
+- Dispositivos
+- Servicios del sistema
+
+---
+
+## 20. Concepto de Tool
+
+Una Tool es:
+
+- Una función estructurada
+- Con inputs definidos
+- Con outputs claros
+- Ejecutable por la IA
+
+---
+
+### Ejemplos de tools
+
+- scan_network
+- ssh_execute
+- get_devices
+- update_device
+- open_web_interface
+
+---
+
+## 21. Estructura conceptual de una Tool
+
+Cada tool define:
+
+- Nombre
+- Descripción
+- Parámetros
+- Permisos requeridos
+- Plugin al que pertenece
+
+---
+
+### Ejemplo conceptual
+
+
+Tool: scan_network
+
+Inputs:
+
+range
+speed
+
+Output:
+
+lista de dispositivos
+
+---
+
+## 22. Registro de Tools
+
+Las tools pueden registrarse desde:
+
+- CORE
+- Plugins
+- Sub-plugins
+
+---
+
+### Importante
+
+Esto permite que:
+
+- Cada plugin exponga capacidades a la IA
+- El sistema crezca dinámicamente
+- La IA tenga acceso estructurado a nuevas funciones
+
+---
+
+## 23. Tools por Plugin
+
+Cada plugin puede:
+
+- Definir sus propias tools
+- Extender tools existentes
+- Restringir acceso
+
+---
+
+### Ejemplo
+
+Plugin Watcher:
+
+- scan_network
+- get_network_info
+
+Plugin SSH:
+
+- execute_command
+- upload_file
+- restart_service
+
+---
+
+## 24. Tools para Agentes
+
+Cada agente puede:
+
+- Tener acceso a ciertas tools
+- Tener restricciones
+- Tener prioridad sobre otras tools
+
+---
+
+### Configuración de agentes con tools
+
+- Lista de tools permitidas
+- Nivel de acceso
+- Contexto disponible
+
+---
+
+## 25. Sistema de permisos
+
+Las tools deben poder tener:
+
+- Permisos básicos
+- Permisos críticos (requieren confirmación)
+- Acceso restringido por agente
+
+---
+
+## 26. Ejecución de Tools
+
+Flujo:
+
+
+IA recibe prompt
+→ Analiza intención
+→ Selecciona tool
+→ Ejecuta tool
+→ Recibe resultado
+→ Responde al usuario
+
+
+---
+
+## 27. Tools dinámicas
+
+El sistema permite:
+
+- Crear nuevas tools en runtime
+- Modificar tools existentes
+- Activar/desactivar tools
+
+---
+
+## 28. Integración con Plugins (Servitización)
+
+Las tools funcionan como capa de servicios:
+
+- Cada plugin expone funcionalidades como tools
+- La IA consume esas tools como servicios
+
+---
+
+### Concepto clave
+
+> Plugin = Feature  
+> Tool = API del plugin para la IA
+
+---
+
+## 29. Extensión del sistema
+
+Esto permite:
+
+- Añadir nuevas capacidades sin modificar el core
+- Integrar nuevos plugins fácilmente
+- Escalar el sistema con IA
+
+---
+
+## 30. Ejemplo completo
+
+
+Prompt:
+"Escanea la red y reinicia todos los dispositivos offline"
+
+IA:
+→ usa scan_network (Watcher)
+→ filtra dispositivos offline
+→ usa execute_command (SSH)
+→ ejecuta reboot
+
+
+---
+
+## 31. Objetivo final
+
+Crear un sistema donde:
+
+- La IA no ejecuta código directo
+- La IA usa tools estructuradas
+- Todo el sistema es controlable de forma segura y modular
+
+
+## 18. Objetivo final
+
+Convertirse en:
+
+- Interfaz principal del sistema
+- Orquestador total de funciones
+- Herramienta de automatización avanzada
+
+Nota arquitectónica clave
+
+Este módulo no es solo un “chat”, es:
+
+la capa de control universal del sistema
+
+además tiene que tener en el chat dictado por voz

@@ -1,0 +1,254 @@
+Archivo 5: NETWORK_MANAGER.md (antes “Mire”)
+# NETWORK MANAGER — Control de Red del Equipo Local
+
+## 1. Propósito
+
+El Network Manager permite:
+
+- Configurar la red del equipo local
+- Gestionar adaptadores de red
+- Cambiar IP, gateway y subnet
+- Activar/desactivar interfaces
+- Crear y controlar múltiples configuraciones de red
+
+Este módulo funciona como una **navaja suiza para manipulación de red local**.
+
+---
+
+## 2. Tipo de plugin
+
+- Function Plugin (nivel raíz)
+- Visible en sidebar
+- Integrado con Watcher y AI
+
+---
+
+## 3. Objetivos principales
+
+- Control total de red local
+- Configuración rápida y flexible
+- Soporte para múltiples adaptadores
+- Integración con automatización (IA)
+
+---
+
+## 4. Secciones principales
+
+---
+
+### 4.1 Información de red actual
+
+Muestra automáticamente:
+
+- IP local
+- Gateway
+- Subnet mask
+- DNS
+- Adaptador activo
+
+---
+
+### 4.2 Gestión de adaptadores
+
+Lista de interfaces de red:
+
+- Ethernet
+- WiFi
+- Virtual (VPN, Docker, etc.)
+
+---
+
+### Acciones disponibles
+
+- Activar/desactivar adaptador
+- Cambiar configuración
+- Priorizar interfaz
+- Renombrar (opcional)
+
+---
+
+## 5. Configuración manual
+
+Permite modificar:
+
+- IP local
+- Gateway
+- Subnet mask
+- DNS
+
+---
+
+### Modos
+
+#### DHCP
+- Automático
+- Obtiene configuración del router
+
+#### Estático
+- Configuración manual completa
+
+---
+
+## 6. Perfiles de red
+
+Permite guardar configuraciones:
+
+Ejemplo:
+
+- Casa
+- Taller
+- Laboratorio
+- Red aislada
+
+---
+
+### Cada perfil incluye:
+
+- IP
+- Gateway
+- Subnet
+- DNS
+- Adaptador
+
+---
+
+### Funciones
+
+- Guardar perfil
+- Cargar perfil
+- Cambiar rápidamente entre perfiles
+
+---
+
+## 7. Redes múltiples
+
+Permite:
+
+- Levantar múltiples configuraciones
+- Cambiar entre redes rápidamente
+- Configurar múltiples interfaces simultáneamente
+
+---
+
+## 8. Control avanzado
+
+### Funcionalidades
+
+- Reiniciar adaptador
+- Liberar / renovar IP
+- Flush DNS
+- Ver rutas de red
+
+---
+
+## 9. Integración con Watcher
+
+- Usa rangos detectados
+- Permite cambiar red y reescanear automáticamente
+- Sincroniza subredes
+
+---
+
+## 10. Integración con IA
+
+La IA puede:
+
+- Cambiar IP
+- Configurar red automáticamente
+- Activar perfiles
+- Diagnosticar problemas
+
+---
+
+### Ejemplo
+
+
+"Cambia a la red del taller"
+
+→ carga perfil
+→ aplica configuración
+→ reinicia adaptador
+
+
+---
+
+## 11. Seguridad
+
+- Confirmación para cambios críticos
+- Validación de IP
+- Prevención de conflictos
+
+---
+
+## 12. Logs
+
+Se registra:
+
+- Cambios de configuración
+- Activación/desactivación de interfaces
+- Errores de red
+
+---
+
+## 13. UI esperada
+
+### Componentes
+
+- Panel de adaptadores
+- Editor de configuración
+- Selector de perfiles
+- Estado en tiempo real
+
+---
+
+## 14. Flujo de uso
+
+
+Usuario entra al módulo
+→ Ve interfaces disponibles
+→ Selecciona adaptador
+→ Modifica configuración
+→ Aplica cambios
+→ Sistema actualiza red
+
+
+---
+
+## 15. Persistencia
+
+Se guarda:
+
+- Perfiles de red
+- Configuraciones previas
+- Preferencias del usuario
+
+---
+
+## 16. Integración con Tools (IA)
+
+Este módulo expone tools como:
+
+- set_ip
+- set_gateway
+- set_subnet
+- enable_adapter
+- disable_adapter
+- apply_profile
+
+---
+
+## 17. Consideraciones técnicas
+
+- Dependiente del sistema operativo
+- Requiere permisos elevados
+- Puede afectar conectividad activa
+
+---
+
+## 18. Objetivo final
+
+Convertirse en:
+
+- Centro de control de red local
+- Herramienta avanzada para makers
+- Base para automatización de red

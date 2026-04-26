@@ -1,0 +1,287 @@
+Archivo 12: TASKS.md
+# TASKS — Sistema de Tareas y Automatización
+
+## 1. Propósito
+
+Permitir ejecutar secuencias de acciones automatizadas:
+
+- Scripts reutilizables
+- Pipelines
+- Automatización multi-dispositivo
+
+---
+
+## 2. Concepto clave
+
+> Una tarea = conjunto de acciones ejecutadas de forma controlada
+
+---
+
+## 3. Tipos de tareas
+
+- Manuales
+- Automatizadas (eventos)
+- Ejecutadas por IA
+
+---
+
+## 4. Estructura
+
+
+Task:
+id
+name
+steps
+targets
+
+
+---
+
+## 5. Steps
+
+Cada tarea se compone de pasos:
+
+- Ejecutar comando
+- Llamar tool
+- Esperar resultado
+- Validar condición
+
+---
+
+### Ejemplo
+
+
+build firmware
+→ compile
+→ flash
+→ restart device
+
+
+---
+
+## 6. Integración
+
+---
+
+### Terminal
+
+- Ejecuta comandos
+
+---
+
+### SSH
+
+- Ejecuta remoto
+
+---
+
+### Device Manager
+
+- Selecciona targets
+
+---
+
+### AI
+
+- Genera tareas automáticamente
+
+---
+
+## 7. Multi-dispositivo
+
+- Paralelo
+- Secuencial
+
+---
+
+## 8. Logs
+
+- Resultado por paso
+- Errores
+- Estado
+
+---
+
+## 9. UI
+
+- Editor de tareas
+- Historial
+- Ejecución manual
+
+---
+
+## 10. Objetivo final
+
+Automatizar completamente flujos de trabajo repetitivos
+
+Archivo 13: AUTOMATION_FLOW.md (tipo Node-RED)
+# AUTOMATION FLOW — Automatización Visual
+
+## 1. Propósito
+
+Crear automatizaciones mediante flujos visuales.
+
+---
+
+## 2. Concepto clave
+
+> Evento → condición → acción
+
+---
+
+## 3. Componentes
+
+- Nodos
+- Conexiones
+- Flujo
+
+---
+
+## 4. Tipos de nodos
+
+---
+
+### Eventos
+
+- device_online
+- device_offline
+
+---
+
+### Condiciones
+
+- estado
+- tipo
+
+---
+
+### Acciones
+
+- SSH command
+- Task
+- Notificación
+
+---
+
+## 5. Ejemplo
+
+
+Device offline
+→ esperar 10s
+→ reiniciar vía SSH
+
+
+---
+
+## 6. Integración
+
+- Device Manager
+- Tasks
+- AI
+- Watcher
+
+---
+
+## 7. UI
+
+- Editor visual
+- Drag & drop
+- Conexiones
+
+---
+
+## 8. Objetivo final
+
+Automatización compleja sin escribir código
+
+Archivo 14: REMOTE_FILESYSTEM.md
+# REMOTE FILESYSTEM — Sistema de Archivos Unificado
+
+## 1. Propósito
+
+Permitir acceder a archivos remotos como si fueran locales.
+
+---
+
+## 2. Concepto clave
+
+> Todos los archivos (locales y remotos) en un solo sistema
+
+---
+
+## 3. Tipos de acceso
+
+---
+
+### Local
+
+- Archivos del sistema
+
+---
+
+### SSH
+
+- Archivos remotos
+
+---
+
+### GIT
+
+- Repositorios
+
+---
+
+## 4. Estructura
+
+
+/local
+/devices
+/device_1
+/device_2
+/projects
+
+
+---
+
+## 5. Funcionalidades
+
+- Navegar archivos
+- Editar
+- Subir / descargar
+- Sincronizar
+
+---
+
+## 6. Integración
+
+---
+
+### SSH
+
+- Acceso remoto
+
+---
+
+### GIT
+
+- Versionado
+
+---
+
+### Device Manager
+
+- Asociación por dispositivo
+
+---
+
+## 7. UI
+
+- Explorador de archivos
+- Editor
+- Vista jerárquica
+
+---
+
+## 8. Objetivo final
+
+Unificar todos los archivos del sistema en una sola interfaz

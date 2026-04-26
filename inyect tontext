@@ -1,0 +1,171 @@
+# Inject Context (inyect tontext)
+
+Objetivo: que podamos seguir desarrollando esta app **sin re-abrir todo el código**. Este archivo es el “mapa mínimo” (jerarquía de contextos) y las reglas para trabajar rápido y consistente.
+
+---
+
+## 0) Quick Start (Comandos)
+
+```powershell
+cd "C:\Users\pips_\Documents\IA_PROYECTS\html ui v2"
+npm run dev
+```
+
+Build:
+```powershell
+npm run build
+```
+
+---
+
+## 1) Jerarquía de Contextos (Qué leer primero)
+
+Regla: abre solo lo necesario según el tipo de cambio.
+
+1. Contexto global (siempre):
+   - `package.json` (scripts, deps)
+   - `vite.config.ts`, `index.html`, `src/main.tsx` (arranque)
+   - `src/styles/index.css` (imports de estilos)
+2. Core UI (si toca layout/estructura):
+   - `src/app/App.tsx` (sidebar izquierda, topbar, mounting plugins, margin-right cuando DevMode)
+3. Configuración/Temas:
+   - `src/app/components/SettingsDialog.tsx` (secciones, toggles, “Developer”)
+   - `src/app/components/ThemeContext.tsx` (tema y colores)
+4. Plugins / sistema:
+   - `src/app/plugins/PluginSystem.tsx` (registry, enable/disable, subscribe)
+   - `src/app/plugins/*Plugin.tsx` (settings por plugin)
+5. UI kit (si necesitas un componente):
+   - `src/app/components/ui/*` (shadcn/radix adaptado)
+6. Dev tools internos (solo si toca dev mode):
+   - `src/app/components/developer/DevModeContext.tsx`
+   - `src/app/components/developer/DeveloperDock.tsx`
+
+---
+
+## 2) Mapa de Arquitectura (App → Plugins → UI)
+
+### 2.1 Core mental model
+
+- `ThemeProvider` (tema actual) envuelve todo.
+- `DevModeProvider` (modo desarrollador + persistencia) envuelve el contenido.
+- `pluginManager` es un registro en memoria:
+  - plugins = `{ id, name, component, enabled, settingsComponent?, category? }`
+  - `subscribe()` notifica cuando se habilita/deshabilita.
+- `App.tsx`:
+  - Renderiza sidebar izquierda con tabs según `pluginManager.getEnabledPlugins()`.
+  - Renderiza el `ActiveComponent` del plugin activo.
+  - Monta `SettingsDialog`.
+  - Monta `DeveloperDock` (solo aparece si `DevMode.enabled`).
+
+### 2.2 Plugins actualmente registrados (ver `src/app/App.tsx`)
+
+Core:
+- `dashboard` → `Dashboard`
+
+Network:
+- `network` → `NetworkWatcher`
+- `netconfig` → `NetworkConfig`
+
+Tools:
+- `terminal` → `SSHTerminal`
+- `credentials` → `CredentialsManager`
+
+AI:
+- `ai` → `AIAssistant`
+
+Cada plugin puede tener settings: `settingsComponent` (aparece en Configuración).
+
+---
+
+## 3) Convenciones para “Encontrar Rápido”
+
+### 3.1 DEV-ID (búsqueda instantánea)
+
+Donde importa dejar anclas, usa comentarios y atributos:
+
+- Comentarios: `// DEV-ID: nombre-estable`
+- Atributos: `data-dev-id="nombre-estable"`
+
+Ejemplos existentes:
+- `DEV-ID: developer-dock-mount` (montaje del dock)
+- `DEV-ID: dev-mode-toggle` (switch de developer mode)
+- `DEV-ID: dev-save` / `DEV-ID: ia-dev-save`
+
+Regla: si introduces una UI nueva, agrega al menos 1 `DEV-ID` en el contenedor raíz del componente.
+
+### 3.2 Persistencia DevMode (sin backend)
+
+DevMode usa `localStorage`:
+- enabled: `nexus_dev_mode_enabled_v1`
+- snippets: `nexus_dev_backend_snippets_v1`
+- last snapshot: `nexus_ia_dev_last_snapshot_v1`
+
+IDs generados:
+- Snippets: `dev_snip_*`
+- Eventos: `dev_evt_*`
+- Snapshots: `ia_dev_*`
+
+“IA,Dev” descarga un JSON temporal: `ia-dev-snapshot-<id>.json`
+
+---
+
+## 4) Cómo hacer cambios sin romper la arquitectura
+
+### 4.1 Agregar un plugin nuevo (mínimo)
+
+1. Crear el componente en `src/app/components/<TuPlugin>.tsx` (o carpeta propia si crece).
+2. (Opcional) Crear settings en `src/app/plugins/<TuPlugin>Plugin.tsx`.
+3. Registrar el plugin en `src/app/App.tsx` con:
+   - `id` estable (no lo cambies luego)
+   - `icon` de `lucide-react`
+   - `category`
+   - `enabled: true/false`
+4. Agregar al menos un `DEV-ID` en el componente nuevo.
+
+### 4.2 Cambios visuales globales
+
+- Tokens/variables: `src/styles/theme.css`
+- Tailwind v4: `src/styles/tailwind.css`
+- App layout: `src/app/App.tsx`
+
+---
+
+## 5) Skills del Repo (Uso eficiente)
+
+Carpeta: `skills/` (son guías internas del proyecto).
+
+Regla de oro: **aplica la skill mínima que cubra la tarea**.
+
+- `planning-and-task-breakdown`:
+  - Úsala cuando el cambio toque varias partes o esté ambiguo.
+  - Output esperado: tareas pequeñas + verificación por tarea.
+- `incremental-implementation`:
+  - Implementa en rebanadas (1 cosa completa, build, siguiente).
+- `test-driven-development`:
+  - Para lógica/bugs (aunque el repo hoy no tenga suite, al menos “Prove-It Pattern” mental).
+- `debugging-and-error-recovery`:
+  - Si algo falla: reproduce → localiza → reduce → arregla → guarda contra regresión.
+- `frontend-ui-engineering`:
+  - Para UI: accesibilidad básica, estados, responsive, evitar “AI aesthetic”.
+- `code-review-and-quality`:
+  - Antes de cerrar cambios: correctness/readability/architecture/security/perf + verificación.
+
+---
+
+## 6) “Definition of Done” mínima para cambios
+
+- `npm run build` pasa.
+- No hay errores de consola obvios (al menos smoke test en `npm run dev`).
+- Nuevos componentes tienen `DEV-ID` (comentario o `data-dev-id`).
+- Si agregas algo que se “configura”, debe vivir en Configuración o tener un punto claro de acceso.
+
+---
+
+## 7) Notas del producto (alto nivel)
+
+Docs de visión (no necesarias para cambios pequeños, pero útiles para alinear):
+- `navaja maker/ARCHITECTURE.md.txt`
+- `navaja maker/CORE.md.txt`
+
+Idea central: “todo es plugin”, core mínimo, extensión por módulos, UI consistente.
+
