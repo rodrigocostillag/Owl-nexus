@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDevMode } from "../developer/DevModeContext";
 import DeveloperDock from "../developer/DeveloperDock";
 import AiOverlayPanel from "./AiOverlayPanel";
+import NotificationsPanel from "./NotificationsPanel";
 import { useRightPanel } from "./RightPanelContext";
 
 // DEV-ID: right-panel-host
@@ -11,6 +12,10 @@ export default function RightPanelHost() {
 
   // Decide which panel is active when states change.
   useEffect(() => {
+    if (rp.notificationsOpen) {
+      rp.setActivePanel("notifications");
+      return;
+    }
     if (rp.aiOpen) {
       rp.setActivePanel("ai");
       return;
@@ -21,10 +26,10 @@ export default function RightPanelHost() {
     }
     rp.setActivePanel(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rp.aiOpen, dev.enabled]);
+  }, [rp.notificationsOpen, rp.aiOpen, dev.enabled]);
 
+  if (rp.activePanel === "notifications") return <NotificationsPanel />;
   if (rp.activePanel === "ai") return <AiOverlayPanel />;
   if (rp.activePanel === "dev") return <DeveloperDock />;
   return null;
 }
-

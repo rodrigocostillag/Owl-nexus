@@ -18,6 +18,7 @@ import {
   Pause
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
+import { useNotifications } from './notifications/NotificationsContext';
 
 interface NetworkDevice {
   ip: string;
@@ -50,6 +51,7 @@ interface Column {
 
 export default function NetworkWatcher() {
   const { theme } = useTheme();
+  const notif = useNotifications();
   const [scanning, setScanning] = useState(false);
   const [scanPaused, setScanPaused] = useState(false);
   const [fastScanning, setFastScanning] = useState(false);
@@ -96,6 +98,7 @@ export default function NetworkWatcher() {
     setScanning(false);
     setScanPaused(false);
     setScanningIPs([]);
+    notif.push({ type: "info", source: "Watcher", message: "Escaneo detenido (UI)" });
   };
 
   useEffect(() => {
@@ -106,9 +109,14 @@ export default function NetworkWatcher() {
   const handleScan = () => {
     if (scanning) {
       // Toggle pause/resume
-      setScanPaused((p) => !p);
+      setScanPaused((p) => {
+        const next = !p;
+        notif.push({ type: "warning", source: "Watcher", message: next ? "Escaneo pausado (UI)" : "Escaneo reanudado (UI)" });
+        return next;
+      });
     } else {
       setScanning(true);
+      notif.push({ type: "info", source: "Watcher", message: "Escaneo iniciado (UI)" });
       const baseIP = selectedSubnet.split('.').slice(0, 3).join('.');
       const [start, end] = selectedRange.split('-').map(Number);
 

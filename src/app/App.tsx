@@ -5,6 +5,7 @@ import { useDevMode } from './components/developer/DevModeContext';
 import DevClickTracker from './components/developer/DevClickTracker';
 import { RightPanelProvider, useRightPanel } from './components/right-panel/RightPanelContext';
 import RightPanelHost from './components/right-panel/RightPanelHost';
+import { NotificationsProvider, useNotifications } from './components/notifications/NotificationsContext';
 import { pluginManager } from './plugins/PluginSystem';
 import Dashboard from './components/Dashboard';
 import NetworkWatcher from './components/NetworkWatcher';
@@ -27,7 +28,8 @@ import {
   Network,
   Sparkles,
   Settings,
-  Bot
+  Bot,
+  Bell
 } from 'lucide-react';
 
 // Register all plugins
@@ -98,6 +100,7 @@ function AppContent() {
   const { theme } = useTheme();
   const dev = useDevMode();
   const rp = useRightPanel();
+  const notif = useNotifications();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [enabledPlugins, setEnabledPlugins] = useState(pluginManager.getEnabledPlugins());
@@ -215,7 +218,7 @@ function AppContent() {
 
       {/* Main Content */}
       {/* DEV-ID: main-content-wrapper */}
-      <div className="ml-20" style={{ marginRight: (dev.enabled || rp.aiOpen) ? rp.widthPx : 0 }}>
+      <div className="ml-20" style={{ marginRight: (dev.enabled || rp.aiOpen || rp.notificationsOpen) ? rp.widthPx : 0 }}>
         {/* Top Bar */}
         <header className="h-16 border-b flex items-center justify-between px-8"
           style={{
@@ -232,6 +235,31 @@ function AppContent() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            {/* DEV-ID: notifications-toggle */}
+            <button
+              type="button"
+              onClick={() => rp.setNotificationsOpen(!rp.notificationsOpen)}
+              className="relative px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 transition-all"
+              style={{
+                backgroundColor: rp.notificationsOpen ? `${theme.colors.primary}20` : theme.colors.bg,
+                border: `1px solid ${theme.colors.border}`,
+                color: rp.notificationsOpen ? theme.colors.primary : theme.colors.textSecondary
+              }}
+              title="Notificaciones"
+              data-dev-id="notifications-toggle"
+              data-dev-action="toggleNotifications"
+            >
+              <Bell className="w-4 h-4" />
+              {notif.unreadCount > 0 ? (
+                <span
+                  className="absolute -top-1 -right-1 text-[10px] px-1.5 py-0.5 rounded-full"
+                  style={{ backgroundColor: theme.colors.error, color: "#fff" }}
+                  data-dev-id="notifications-badge"
+                >
+                  {Math.min(99, notif.unreadCount)}
+                </span>
+              ) : null}
+            </button>
             {/* DEV-ID: ai-overlay-toggle */}
             <button
               type="button"
@@ -274,11 +302,13 @@ function AppContent() {
 export default function App() {
   return (
     <ThemeProvider>
-      <DevModeProvider>
-        <RightPanelProvider>
-          <AppContent />
-        </RightPanelProvider>
-      </DevModeProvider>
+      <NotificationsProvider>
+        <DevModeProvider>
+          <RightPanelProvider>
+            <AppContent />
+          </RightPanelProvider>
+        </DevModeProvider>
+      </NotificationsProvider>
     </ThemeProvider>
   );
 }
